@@ -22,8 +22,8 @@ void main(List<String> args) {
       listTemporal.add(sexo);
       listTemporal.add(estadoCivil);
       listTemporal.add(edadPaciente);
+      listCentroAsistencial.add(listTemporal);
     }
-    listCentroAsistencial.add(listTemporal);
 
 
     if (input == "2") {
