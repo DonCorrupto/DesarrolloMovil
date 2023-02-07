@@ -4,10 +4,10 @@ void main(List<String> args) {
     [25, 29, 35]
   ];
 
-  for (var i = 0; i <= list.length; i++) {
-    for (var x = 0; x <= list.length; x++) {
-      print(list[i][x]);
+  for (var i = 0; i < list.length; i++) {
+    for (var x = 0; x < list[1].length; x++) {
+      //print(list[i][x]);
     }
-    //print(list[i]);
+    print(list[i][0]);
   }
 }
