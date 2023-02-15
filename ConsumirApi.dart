@@ -1,32 +1,9 @@
+
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-void main(List<String> args) async {
-  String host = "api.chucknorris.io";
-  String path = "/jokes/random";
-
-  List<Jokes> ChuckJokes = [];
-
-  getJoke(host, path).then((result) {
-    String body = result.body;
-    var resultJson = jsonDecode(body);
-    //print(resultJson);
-
-    for (var i = 0; i < 50; i++) {
-      ChuckJokes.add(Jokes.fromJson(resultJson));
-    }
-    print(ChuckJokes);
-  });
-}
-
-Future<http.Response> getJoke(String host, String path) async {
-  Uri url = Uri.http(host, path);
-  var result = await http.get(url);
-  return result;
-}
-
-//
-class Jokes {
+class ChuckNorrisJoke {
   late var categories;
   late String created_at;
   late String icon_url;
@@ -35,7 +12,7 @@ class Jokes {
   late String url;
   late String value;
 
-  Jokes.fromJson(Map<String, dynamic> json) {
+  ChuckNorrisJoke.fromJson(Map<String, dynamic> json) {
     this.categories = json["categories"];
     this.created_at = json["created_at"];
     this.icon_url = json["icon_url"];
@@ -45,4 +22,33 @@ class Jokes {
     this.value = json["value"];
   }
 
+  @override
+  String toString() {
+    return "\n $categories, $created_at, $icon_url, $id, $updated_at, $url, $value \n";
+  }
 }
+
+void main() async {
+  final List<ChuckNorrisJoke> jokes = [];
+
+  for (int i = 0; i < 50; i++) {
+    final response = await http.get(Uri.parse('https://api.chucknorris.io/jokes/random'));
+    final Map<String, dynamic> json = jsonDecode(response.body);
+    final joke = ChuckNorrisJoke.fromJson(json);
+    jokes.add(joke);
+  }
+
+  print(jokes);
+  print('Total jokes: ${jokes.length}');
+}
+
+
+
+
+
+
+
+
+
+
+
