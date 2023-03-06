@@ -1,0 +1,16 @@
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\bin\Debug\netstandard2.0\DemoExpo.deps.json
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\bin\Debug\netstandard2.0\DemoExpo.dll
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\bin\Debug\netstandard2.0\DemoExpo.pdb
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.csproj.AssemblyReference.cache
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\App.xaml.g.cs
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\Vistas\Menuprincipal.xaml.g.cs
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.AssemblyInfoInputs.cache
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.AssemblyInfo.cs
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.csproj.CoreCompileInputs.cache
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\XamlC.stamp
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.dll
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\refint\DemoExpo.dll
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\DemoExpo.pdb
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\ref\DemoExpo.dll
+C:\Users\mario\Desktop\UDEM\Semestre 7\DesarrolloMovil\dllo-movil-flutter\DemoExpo\DemoExpo\obj\Debug\netstandard2.0\Vistas\Convertir.xaml.g.cs
