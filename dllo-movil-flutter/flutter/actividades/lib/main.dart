@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 
-import 'Actividad3/Inferior.dart';
-import 'Actividad3/Superior.dart';
+import 'package:flutter/material.dart';
+import 'Actividad4/main_app_ejemplo_1.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,15 +16,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Scaffold(
-          body: Container(
-              color: Colors.green.shade900,
-              child: Column(
-                children: [
-                  Superior(
-                      "https://cdn.pixabay.com/photo/2021/08/11/20/48/bird-6539424_640.png"),
-                  Inferior()],
-              ))),
+      home: MainAppEjemplo1()
+      //  Scaffold(
+      //     appBar: AppBar(
+      //       title: const Text("To Do"),
+      //       titleSpacing: 100,
+      //     ),
+      //     body:ButtonBase(),
+          
+      //  )
     );
   }
 }
