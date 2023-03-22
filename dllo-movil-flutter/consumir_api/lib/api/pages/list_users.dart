@@ -1,31 +1,22 @@
 import 'package:consumir_api/api/controller/Characters.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+//import 'package:flutter/material.dart';
 
-namesDatos() async {
-  var characters = await obtenerDatos();
+Datos() async {
+  var characters = obtenerDatos();
 
-  List<dynamic> names = [];
-
-  for (var entry in characters.entries) {
-    names.add(entry.key);
+    @override
+  String toString() {
+    return characters.toString();
   }
 
-  return names;
+  return characters;
 }
 
-imagesDatos() async {
-  var characters = await obtenerDatos();
-
-  List<dynamic> images = [];
-
-  for (var entry in characters.entries) {
-    images.add(entry.key);
-  }
-
-  return images;
+void main() {
+  print(Datos());
 }
 
+/*
 class CharactersMarvel extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -52,3 +43,4 @@ class _CharactersMarvel extends State<CharactersMarvel> {
     );
   }
 }
+*/
