@@ -1,22 +1,34 @@
 import 'package:consumir_api/api/controller/Characters.dart';
-//import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'dart:convert';
 
-Datos() async {
-  var characters = obtenerDatos();
+import 'package:http/http.dart' as http;
 
-    @override
-  String toString() {
-    return characters.toString();
+Future<dynamic> obtenerDatos() async {
+  List<List<dynamic>> personajes = [];
+  final List<dynamic> names_imagenes = [];
+
+  var response = await http.get(Uri.parse(
+      'https://gateway.marvel.com:443/v1/public/characters?ts=1&apikey=bd85ca0e2e42ccba38de40d9f2efa7ea&hash=ac373c81c3b6380c033bc2fa423ac425'));
+  final marvel = jsonDecode(response.body)["data"]["results"];
+
+  for (var element in marvel) {
+    names_imagenes.add(Names.fromJson(element));
+    names_imagenes.add(Imagen.fromJson(element));
   }
 
-  return characters;
+  for (int i = 0; i < names_imagenes.length; i += 2) {
+    if (i + 1 < names_imagenes.length) {
+      personajes.add([names_imagenes[i], names_imagenes[i + 1]]);
+    } else {
+      personajes.add([names_imagenes[i]]);
+    }
+  }
+
+  //print(personajes);
+  return personajes;
 }
 
-void main() {
-  print(Datos());
-}
-
-/*
 class CharactersMarvel extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -25,22 +37,24 @@ class CharactersMarvel extends StatefulWidget {
 }
 
 class _CharactersMarvel extends State<CharactersMarvel> {
-  final _name = namesDatos();
-  final _image = imagesDatos();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    namesDatos();
-    imagesDatos();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text(_name),
+      child: FutureBuilder(
+        future: obtenerDatos(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Text(
+              snapshot.data.toString(),
+              style: TextStyle(fontSize: 15),
+            );
+          }
+        },
+      ),
     );
   }
 }
-*/
