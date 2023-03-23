@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MainAppEjemplo1(),
+      home: MainAppMarvel(),
       //routes: {'detail_user': (context) => DetailUser()},
       //  Scaffold(
       //     appBar: AppBar(

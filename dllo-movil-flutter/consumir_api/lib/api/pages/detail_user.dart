@@ -11,12 +11,12 @@ class DetailUser extends StatefulWidget {
 class _DetailUser extends State<DetailUser> {
   @override
   Widget build(BuildContext context) {
-    User args = ModalRoute.of(context)?.settings.arguments as User;
+    //User args = ModalRoute.of(context)?.settings.arguments as User;
 
-    String user_name = args.name;
+    //String user_name = args.name;
     return Container(
       child: Center(
-        child: Text(user_name),
+        //child: Text(user_name),
       ),
     );
   }

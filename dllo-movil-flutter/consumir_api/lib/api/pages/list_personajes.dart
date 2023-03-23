@@ -44,14 +44,19 @@ class _CharactersMarvel extends State<CharactersMarvel> {
         future: obtenerDatos(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return Text(
-              snapshot.data.toString(),
-              style: TextStyle(fontSize: 15),
-            );
+            return Center(
+                child: ListView.separated(
+              itemCount: snapshot.data.toString().length,
+              separatorBuilder: (context, index) => Divider(),
+              itemBuilder: (context, index) => ListTile(
+                leading: Image.network(snapshot.data[index][1].toString(),),
+                title: Text(snapshot.data[index][0].toString()),
+              ),
+            ));
           }
         },
       ),

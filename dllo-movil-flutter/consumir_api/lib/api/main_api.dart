@@ -1,16 +1,16 @@
 import 'package:consumir_api/api/pages/home.dart';
-import 'package:consumir_api/api/pages/list_users.dart';
+import 'package:consumir_api/api/pages/list_personajes.dart';
 import 'package:consumir_api/api/pages/profile.dart';
 import 'package:flutter/material.dart';
 
-class MainAppEjemplo1 extends StatefulWidget {
+class MainAppMarvel extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _MainAppEjemplo1();
+    return _MainAppMarvel();
   }
 }
 
-class _MainAppEjemplo1 extends State<MainAppEjemplo1> {
+class _MainAppMarvel extends State<MainAppMarvel> {
   final List<Widget> pages = [Home(), Profile(), CharactersMarvel()];
   int currentlyIndex = 0;
 
@@ -24,7 +24,10 @@ class _MainAppEjemplo1 extends State<MainAppEjemplo1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Tareas"),
+        title: const Text("Marvel", style: TextStyle(fontSize: 25),),
+        backgroundColor: Colors.red,
+        centerTitle: true,
+
       ),
       body: pages[currentlyIndex],
       bottomNavigationBar: Theme(
@@ -42,7 +45,7 @@ class _MainAppEjemplo1 extends State<MainAppEjemplo1> {
               icon: Icon(Icons.person),
             ),
             BottomNavigationBarItem(
-              label: "Usuarios",
+              label: "Personajes",
               icon: Icon(Icons.people),
             )
           ],
