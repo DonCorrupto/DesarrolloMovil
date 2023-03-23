@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
 class _Home extends State<Home> {
   String clave = "";
   late String url =
-      "https://i.pinimg.com/736x/3f/36/c1/3f36c1314414dd1f4d86a65ceaf6e875.jpg";
+      "https://i.pinimg.com/564x/60/4c/dd/604cdd9a0981eefbd80e179cd2a1b4e0.jpg";
   bool? isActive = false;
   void onChanged1(bool? value) {
     setState(() {
@@ -21,6 +21,6 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Image.network(url));
+    return Container(color: Colors.black, child: url == null ? CircularProgressIndicator(): Image.network(url), width: 1080, height: 2400,);
   }
 }

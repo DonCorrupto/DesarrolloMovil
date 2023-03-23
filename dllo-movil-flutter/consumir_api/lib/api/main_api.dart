@@ -1,6 +1,6 @@
+import 'package:consumir_api/api/pages/character.dart';
 import 'package:consumir_api/api/pages/home.dart';
 import 'package:consumir_api/api/pages/list_personajes.dart';
-import 'package:consumir_api/api/pages/profile.dart';
 import 'package:flutter/material.dart';
 
 class MainAppMarvel extends StatefulWidget {
@@ -11,7 +11,7 @@ class MainAppMarvel extends StatefulWidget {
 }
 
 class _MainAppMarvel extends State<MainAppMarvel> {
-  final List<Widget> pages = [Home(), Profile(), CharactersMarvel()];
+  final List<Widget> pages = [Home(), Personaje(), CharactersMarvel()];
   int currentlyIndex = 0;
 
   void changePage(int index) {
@@ -24,29 +24,29 @@ class _MainAppMarvel extends State<MainAppMarvel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Marvel", style: TextStyle(fontSize: 25),),
+        title: const Text("Marvel", style: TextStyle(fontSize: 25 ),),
         backgroundColor: Colors.red,
         centerTitle: true,
-
       ),
       body: pages[currentlyIndex],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(),
         child: BottomNavigationBar(
+          backgroundColor: Colors.black,
           onTap: changePage,
           currentIndex: currentlyIndex,
           items: const [
             BottomNavigationBarItem(
               label: "Inicio",
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.red,),
             ),
             BottomNavigationBarItem(
-              label: "Perfil",
-              icon: Icon(Icons.person),
+              label: "Perfil", backgroundColor:Colors.red,
+              icon: Icon(Icons.person, color: Colors.red,),
             ),
             BottomNavigationBarItem(
-              label: "Personajes",
-              icon: Icon(Icons.people),
+              label: "Personajes",backgroundColor:Colors.red,
+              icon: Icon(Icons.people, color: Colors.red,),
             )
           ],
         ),

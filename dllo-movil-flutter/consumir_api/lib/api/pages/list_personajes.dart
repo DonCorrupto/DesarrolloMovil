@@ -5,11 +5,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<dynamic> obtenerDatos() async {
+  const ts = '1';
+  const apiKey = 'bd85ca0e2e42ccba38de40d9f2efa7ea';
+  const hash = 'ac373c81c3b6380c033bc2fa423ac425';
+
   List<List<dynamic>> personajes = [];
   final List<dynamic> names_imagenes = [];
 
   var response = await http.get(Uri.parse(
-      'https://gateway.marvel.com:443/v1/public/characters?ts=1&apikey=bd85ca0e2e42ccba38de40d9f2efa7ea&hash=ac373c81c3b6380c033bc2fa423ac425'));
+      'https://gateway.marvel.com:443/v1/public/characters?ts=$ts&apikey=$apiKey&hash=$hash'));
   final marvel = jsonDecode(response.body)["data"]["results"];
 
   for (var element in marvel) {
@@ -37,26 +41,47 @@ class CharactersMarvel extends StatefulWidget {
 }
 
 class _CharactersMarvel extends State<CharactersMarvel> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.red[900],
       child: FutureBuilder(
         future: obtenerDatos(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return Center(
-                child: ListView.separated(
-              itemCount: snapshot.data.toString().length,
-              separatorBuilder: (context, index) => Divider(),
-              itemBuilder: (context, index) => ListTile(
-                leading: Image.network(snapshot.data[index][1].toString(),),
-                title: Text(snapshot.data[index][0].toString()),
-              ),
-            ));
+            return MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  itemCount: 20,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      color: Colors.black,
+                      child: Column(
+                        children: [
+                          Image.network(
+                            snapshot.data[index][1].toString(),
+                            height: 150,
+                          ),
+                          Text(""),
+                          Text(
+                            snapshot.data[index][0].toString(),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 15),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+            );
           }
         },
       ),

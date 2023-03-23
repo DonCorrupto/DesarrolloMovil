@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'api/main_api.dart';
-//import 'api/pages/detail_user.dart';
 
 void main() {
   runApp( const MyApp());
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MainAppMarvel(),
-      //routes: {'detail_user': (context) => DetailUser()},
       //  Scaffold(
       //     appBar: AppBar(
       //       title: const Text("To Do"),
