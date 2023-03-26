@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'api/main_api.dart';
 
 void main() {
@@ -17,6 +16,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MainAppMarvel(),
+      //routes: {'detail_personaje':(context) => DetailPersonaje()},
       //  Scaffold(
       //     appBar: AppBar(
       //       title: const Text("To Do"),

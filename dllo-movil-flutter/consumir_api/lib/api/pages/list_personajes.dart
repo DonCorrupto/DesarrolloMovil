@@ -1,90 +1,132 @@
-import 'package:consumir_api/api/controller/Characters.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-Future<dynamic> obtenerDatos() async {
-  const ts = '1';
-  const apiKey = 'bd85ca0e2e42ccba38de40d9f2efa7ea';
-  const hash = 'ac373c81c3b6380c033bc2fa423ac425';
-
-  List<List<dynamic>> personajes = [];
-  final List<dynamic> names_imagenes = [];
-
-  var response = await http.get(Uri.parse(
-      'https://gateway.marvel.com:443/v1/public/characters?ts=$ts&apikey=$apiKey&hash=$hash'));
-  final marvel = jsonDecode(response.body)["data"]["results"];
-
-  for (var element in marvel) {
-    names_imagenes.add(Names.fromJson(element));
-    names_imagenes.add(Imagen.fromJson(element));
+class ListaPersonajes extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _ListaPersonajes();
   }
+}
 
-  for (int i = 0; i < names_imagenes.length; i += 2) {
-    if (i + 1 < names_imagenes.length) {
-      personajes.add([names_imagenes[i], names_imagenes[i + 1]]);
+class _ListaPersonajes extends State<ListaPersonajes> {
+  List<dynamic> personaje = [];
+
+  Future<void> obtenerPersonaje() async {
+    //no esta funcionando el limite
+    const url =
+        'https://gateway.marvel.com:443/v1/public/characters?ts=2000&apikey=bd85ca0e2e42ccba38de40d9f2efa7ea&hash=d16b26d4add5cf2eb2745c1bca283dbd&limit=40&offset=180';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      setState(() {
+        personaje = jsonData['data']['results'];
+      });
     } else {
-      personajes.add([names_imagenes[i]]);
+      throw Exception('Failed to load characters');
     }
   }
 
-  //print(personajes);
-  return personajes;
-}
-
-class CharactersMarvel extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _CharactersMarvel();
+  void initState() {
+    super.initState();
+    obtenerPersonaje();
   }
-}
-
-class _CharactersMarvel extends State<CharactersMarvel> {
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red[900],
-      child: FutureBuilder(
-        future: obtenerDatos(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),
-                  itemCount: 20,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      color: Colors.black,
-                      child: Column(
-                        children: [
-                          Image.network(
-                            snapshot.data[index][1].toString(),
-                            height: 150,
-                          ),
-                          Text(""),
-                          Text(
-                            snapshot.data[index][0].toString(),
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 15),
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-            );
-          }
-        },
-      ),
-    );
+        child: Center(
+            child: personaje.isEmpty
+                ? CircularProgressIndicator()
+                : MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                        ),
+                        itemCount: 20,
+                        itemBuilder: (BuildContext context, int index) {
+                          final name = personaje[index]['name'];
+                          final image = personaje[index]['thumbnail']['path'] +
+                              '.' +
+                              personaje[index]['thumbnail']['extension'];
+                          final description = personaje[index]['description'];
+                          final comics =
+                              personaje[index]['comics']['available'];
+                          final series =
+                              personaje[index]['series']['available'];
+                          final stories =
+                              personaje[index]['stories']['available'];
+                          final events =
+                              personaje[index]['events']['available'];
+                          late dynamic tres_primeras_series = personaje[index]
+                                  ['series']['items']
+                              .take(3)
+                              .map((e) => e['name'])
+                              .toString();
+                          return Card(
+                            color: Colors.black,
+                            child: Column(
+                              children: [
+                                IconButton(
+                                  icon: Image.network(
+                                    image,
+                                  ),
+                                  tooltip: name,
+                                  iconSize: 120,
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => SimpleDialog(
+                                              title: Text(name,
+                                                  textAlign: TextAlign.center),
+                                              children: [
+                                                Image.network(
+                                                  image,
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(description),
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(
+                                                      "Cantidad de Comics: $comics"),
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(
+                                                      "Cantidad de Series: $series"),
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(
+                                                      "Cantidad de Stories: $stories"),
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(
+                                                      "Cantidad de Events: $events"),
+                                                ),
+                                                SimpleDialogOption(
+                                                  child: Text(
+                                                      "Nombre de las 3 primeras series: $tres_primeras_series"),
+                                                ),
+                                              ],
+                                            ));
+                                  },
+                                ),
+                                Text(""),
+                                Text(
+                                  name,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                )
+                              ],
+                            ),
+                          );
+                        }),
+                  )));
   }
 }

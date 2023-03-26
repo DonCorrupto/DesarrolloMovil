@@ -1,4 +1,3 @@
-import 'package:consumir_api/api/pages/character.dart';
 import 'package:consumir_api/api/pages/home.dart';
 import 'package:consumir_api/api/pages/list_personajes.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ class MainAppMarvel extends StatefulWidget {
 }
 
 class _MainAppMarvel extends State<MainAppMarvel> {
-  final List<Widget> pages = [Home(), Personaje(), CharactersMarvel()];
+  final List<Widget> pages = [Home(), ListaPersonajes()];
   int currentlyIndex = 0;
 
   void changePage(int index) {
@@ -39,10 +38,6 @@ class _MainAppMarvel extends State<MainAppMarvel> {
             BottomNavigationBarItem(
               label: "Inicio",
               icon: Icon(Icons.home, color: Colors.red,),
-            ),
-            BottomNavigationBarItem(
-              label: "Perfil", backgroundColor:Colors.red,
-              icon: Icon(Icons.person, color: Colors.red,),
             ),
             BottomNavigationBarItem(
               label: "Personajes",backgroundColor:Colors.red,
