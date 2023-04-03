@@ -1,4 +1,4 @@
-//import 'package:appmovil/pages/home.dart';
+import 'package:appmovil/pages/home.dart';
 import 'package:appmovil/pages/paises.dart';
 import 'package:flutter/material.dart';
 

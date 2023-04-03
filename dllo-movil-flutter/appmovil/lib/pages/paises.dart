@@ -45,10 +45,10 @@ class _Paises extends State<Paises> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
-                      image: NetworkImage(image[index]),
-                      fit: BoxFit.cover,
-                      colorFilter:
-                          ColorFilter.mode(Colors.black, BlendMode.darken))),
+                    image: NetworkImage(
+                        image[index]),
+                    fit: BoxFit.cover,
+                  )),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -64,69 +64,30 @@ class _Paises extends State<Paises> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Usuario", style: TextStyle(color: Colors.white)),
+                          Text("Usuario",
+                              style: TextStyle(color: Colors.white)),
                           Text("Creador de Contenido",
                               style: TextStyle(color: Colors.white70))
                         ],
                       ),
                       Spacer(),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz, color: Colors.white,))
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.more_horiz,
+                            color: Colors.white,
+                          ))
                     ],
                   ),
                   Spacer(),
                   Text("Pais, Ciudad",
                       style: TextStyle(fontSize: 30, color: Colors.white)),
                   Text("Actividad",
-                    style: TextStyle(fontSize: 20, color: Colors.white70)),
+                      style: TextStyle(fontSize: 20, color: Colors.white70)),
                 ],
               ),
             );
           },
         ));
   }
-
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          title: Text(
-            "Countries",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black),
-          ),
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        body: Container(
-          child: Center(
-            child: image.isEmpty
-                ? CircularProgressIndicator()
-                : MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView.builder(
-                      itemCount: image.length,
-                      itemBuilder: (context, index) {
-                        final imagenes = image[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: NetworkImage(imagenes),
-                                  fit: BoxFit.cover,
-                                  colorFilter: ColorFilter.mode(Colors.black, BlendMode.darken))),
-                        );
-                      },
-                    )),
-          ),
-        ));
-  }
-  */
 }
