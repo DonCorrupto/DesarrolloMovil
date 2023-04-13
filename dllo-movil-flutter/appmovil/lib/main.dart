@@ -1,5 +1,5 @@
 import 'package:appmovil/pages/home.dart';
-import 'package:appmovil/pages/paises.dart';
+import 'package:appmovil/pages/actividades.dart';
 import 'package:flutter/material.dart';
 
 void main() {
