@@ -47,162 +47,10 @@ class _Paises extends State<Paises> {
                   pageBuilder: (_, animation, __) {
                     return FadeTransition(
                         opacity: animation,
-                        child: Scaffold(
-                            body: CustomScrollView(
-                          physics: BouncingScrollPhysics(),
-                          slivers: [
-                            SliverPersistentHeader(
-                              pinned: true,
-                              delegate: BuilderPersistentDelegate(
-                                  maxExtent: MediaQuery.of(context).size.height,
-                                  minExtent: 240,
-                                  builder: (percent) {
-                                    final double topPercent =
-                                        ((1 - percent) / .7).clamp(0.0, 1.0);
-                                    final double bottomPercent =
-                                        (percent / .3).clamp(0.0, 1.0);
-                                    final topPadding =
-                                        MediaQuery.of(context).padding.top;
-                                    return Stack(
-                                      fit: StackFit.expand,
-                                      children: [
-                                        ClipRRect(
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                              top: (20 + topPadding) *
-                                                  (1 - bottomPercent),
-                                              bottom: 160 * (1 - bottomPercent),
-                                            ),
-                                            child: Transform.scale(
-                                              scale: lerpDouble(
-                                                  1, 1.3, bottomPercent)!,
-                                              child: Column(
-                                                children: [
-                                                  Expanded(
-                                                    child: PageView.builder(
-                                                      itemCount: image.length,
-                                                      physics:
-                                                          BouncingScrollPhysics(),
-                                                      controller:
-                                                          PageController(
-                                                              viewportFraction:
-                                                                  .9),
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        final imageUrl =
-                                                            image[index];
-                                                        return Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  right: 10),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors
-                                                                    .black12,
-                                                                blurRadius: 10,
-                                                              )
-                                                            ],
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            image:
-                                                                DecorationImage(
-                                                              image:
-                                                                  NetworkImage(
-                                                                      imageUrl),
-                                                              fit: BoxFit.cover,
-                                                              colorFilter:
-                                                                  ColorFilter.mode(
-                                                                      Colors
-                                                                          .black26,
-                                                                      BlendMode
-                                                                          .darken),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: List.generate(
-                                                        image.length,
-                                                        (index) => Container(
-                                                              color:
-                                                                  Colors.black,
-                                                              margin: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          3),
-                                                              height: 3,
-                                                              width: 10,
-                                                            )),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned.fill(
-                                            top: null,
-                                            child: Container(
-                                              height: 140,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 20, vertical: 10),
-                                              decoration: BoxDecoration(
-                                                  color: Colors.blue.shade50,
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                              30))),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  TextButton.icon(
-                                                      onPressed: () {},
-                                                      style: TextButton.styleFrom(
-                                                          primary: Colors.black,
-                                                          textStyle: TextStyle(fontSize: 17),
-                                                          shape:
-                                                              StadiumBorder()),
-                                                      icon: Icon(
-                                                          CupertinoIcons.heart),
-                                                      label: Text("500"))
-                                                ],
-                                              ),
-                                            )),
-                                        Positioned.fill(
-                                            top: null,
-                                            child: Container(
-                                              height: 70,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                          top: Radius.circular(
-                                                              30))),
-                                            ))
-                                      ],
-                                    );
-                                  }),
-                            ),
-                            SliverToBoxAdapter(child: Placeholder()),
-                            SliverToBoxAdapter(child: Placeholder()),
-                            SliverToBoxAdapter(child: Placeholder()),
-                          ],
-                        )));
+                        child: PlaceDetailScreen(
+                          image: image,
+                          screenHeight: MediaQuery.of(context).size.height,
+                        ));
                   },
                 ));
               },
@@ -278,6 +126,410 @@ class _Paises extends State<Paises> {
   }
 }
 
+class PlaceDetailScreen extends StatefulWidget {
+  const PlaceDetailScreen({
+    super.key,
+    required this.image,
+    required this.screenHeight,
+  });
+
+  final List image;
+  final double screenHeight;
+
+  @override
+  State<PlaceDetailScreen> createState() => _PlaceDetailScreenState();
+}
+
+class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
+  late ScrollController _controller;
+  late ValueNotifier<double> bottomPercentNotifier;
+
+  void _scrollListener() {
+    var percent =
+        _controller.position.pixels / MediaQuery.of(context).size.height;
+    bottomPercentNotifier.value = (percent / .3).clamp(0.0, 1.0);
+  }
+
+  void _isScrollingListener() {
+    var percent = _controller.position.pixels / widget.screenHeight;
+
+    if (!_controller.position.isScrollingNotifier.value) {
+      if (percent < .3 && percent > .1) {
+        _controller.animateTo(widget.screenHeight * .3,
+            duration: kThemeAnimationDuration, curve: Curves.decelerate);
+      }
+      if (percent < .1 && percent > 0) {
+        _controller.animateTo(0,
+            duration: kThemeAnimationDuration, curve: Curves.decelerate);
+      }
+      if (percent < .5 && percent > .3) {
+        _controller.animateTo(widget.screenHeight * .3,
+            duration: kThemeAnimationDuration, curve: Curves.decelerate);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    _controller =
+        ScrollController(initialScrollOffset: widget.screenHeight * .3);
+    _controller.addListener(_scrollListener);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.position.isScrollingNotifier
+          .addListener(_isScrollingListener);
+    });
+    bottomPercentNotifier = ValueNotifier(1.0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_scrollListener);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Stack(
+      children: [
+        CustomScrollView(
+          physics: BouncingScrollPhysics(),
+          controller: _controller,
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: BuilderPersistentDelegate(
+                  maxExtent: MediaQuery.of(context).size.height,
+                  minExtent: 240,
+                  builder: (percent) {
+                    final double topPercent =
+                        ((1 - percent) / .7).clamp(0.0, 1.0);
+                    final double bottomPercent = (percent / .3).clamp(0.0, 1.0);
+                    final topPadding = MediaQuery.of(context).padding.top;
+                    return Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        ClipRect(
+                          child: Stack(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: (20 + topPadding) * (1 - bottomPercent),
+                                  bottom: 160 * (1 - bottomPercent),
+                                ),
+                                child: Transform.scale(
+                                  scale: lerpDouble(1, 1.3, bottomPercent)!,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: PageView.builder(
+                                          itemCount: widget.image.length,
+                                          physics: BouncingScrollPhysics(),
+                                          controller: PageController(
+                                              viewportFraction: .9),
+                                          itemBuilder: (context, index) {
+                                            final imageUrl =
+                                                widget.image[index];
+                                            return AnimatedContainer(
+                                              duration: kThemeAnimationDuration,
+                                              margin:
+                                                  EdgeInsets.only(right: 10),
+                                              decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black12,
+                                                    blurRadius: 10,
+                                                  )
+                                                ],
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(imageUrl),
+                                                  fit: BoxFit.cover,
+                                                  colorFilter: ColorFilter.mode(
+                                                      Colors.black26,
+                                                      BlendMode.darken),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                  top: topPadding,
+                                  left: -60 * (1 - bottomPercent),
+                                  child: BackButton(
+                                    color: Colors.white,
+                                  )),
+                              Positioned(
+                                  top: lerpDouble(20, 140, topPercent)!
+                                      .clamp(topPadding + 10, 140),
+                                  left: lerpDouble(60, 20, topPercent)!
+                                      .clamp(20.0, 50.0),
+                                  right: 20,
+                                  child: AnimatedOpacity(
+                                    duration: kThemeAnimationDuration,
+                                    opacity: bottomPercent < 1 ? 0 : 1,
+                                    child: Text(
+                                      "Actividad",
+                                      style: TextStyle(
+                                          fontSize:
+                                              lerpDouble(20, 40, topPercent),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                        Positioned.fill(
+                            top: null,
+                            bottom: -140 * (1 - topPercent),
+                            child: TranslateAnimation(
+                              child: Container(
+                                height: 140,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                                decoration: BoxDecoration(
+                                    color: Colors.blue.shade50,
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(30))),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextButton.icon(
+                                        onPressed: () {},
+                                        style: TextButton.styleFrom(
+                                            primary: Colors.black,
+                                            textStyle: TextStyle(fontSize: 17),
+                                            shape: StadiumBorder()),
+                                        icon: Icon(
+                                          CupertinoIcons.heart,
+                                          size: 26,
+                                        ),
+                                        label: Text("500")),
+                                    Spacer(),
+                                    TextButton.icon(
+                                        onPressed: () {},
+                                        style: TextButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.blue.shade100,
+                                            primary: Colors.blue.shade600,
+                                            textStyle: TextStyle(fontSize: 17),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                        icon: Icon(
+                                          Icons.check_circle_outline_outlined,
+                                          size: 26,
+                                        ),
+                                        label: Text("Checkin")),
+                                  ],
+                                ),
+                              ),
+                            )),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            color: Colors.white,
+                            height: 10,
+                          ),
+                        ),
+                        Positioned.fill(
+                          top: null,
+                          child: TranslateAnimation(
+                            child: Container(
+                              height: 70,
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(30))),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Usuario", style: TextStyle()),
+                                      Text("Creador de Contenido",
+                                          style: TextStyle(color: Colors.grey))
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.more_horiz,
+                                        color: Colors.white,
+                                      ))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+            ),
+            SliverToBoxAdapter(
+                child: TranslateAnimation(
+                  child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, color: Colors.black26),
+                        Flexible(
+                            child: Text(
+                          "LOCALIZACIÒN",
+                          style: TextStyle(color: Colors.blue),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "LUGARES EN ESTA COLECCIÒN",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                              ),
+                            ),
+                )),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 180,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemExtent: 150,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: widget.image.length,
+                  itemBuilder: (context, index) {
+                    final collectionPage = widget.image[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            collectionPage,
+                            fit: BoxFit.cover,
+                          )),
+                    );
+                  },
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 150,
+              ),
+            )
+          ],
+        ),
+        ValueListenableBuilder<double>(
+          valueListenable: bottomPercentNotifier,
+          builder: (context, value, child) {
+            return Positioned.fill(
+                top: null, bottom: -130 * (1 - value), child: child!);
+          },
+          child: Container(
+            height: 130,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white.withOpacity(0),
+                  Colors.white,
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  height: 60,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade800,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < 3; i++)
+                        Align(
+                          widthFactor: .7,
+                          child: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Comentarios",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "120",
+                        style: TextStyle(
+                            color: Colors.white70, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.arrow_forward)
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
+      ],
+    ));
+  }
+}
+
 class BuilderPersistentDelegate extends SliverPersistentHeaderDelegate {
   BuilderPersistentDelegate({
     required double maxExtent,
@@ -305,5 +557,27 @@ class BuilderPersistentDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
+  }
+}
+
+class TranslateAnimation extends StatelessWidget {
+  const TranslateAnimation({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 1, end: 0),
+      duration: Duration(milliseconds: 600),
+      curve: Curves.easeInOutBack,
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 100 * value),
+          child: child,
+        );
+      },
+      child: child,
+    );
   }
 }
