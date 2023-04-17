@@ -24,7 +24,7 @@ class _Paises extends State<Paises> {
           backgroundColor: Colors.white,
           centerTitle: true,
           title: Text(
-            "Actividades",
+            "Ciudades",
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.black),
           ),
@@ -99,12 +99,6 @@ class _Paises extends State<Paises> {
                         style: TextStyle(fontSize: 30, color: Colors.white)),
                     SizedBox(
                       height: 10,
-                    ),
-                    Container(
-                      child: Text(
-                        "Actividad",
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
                     Spacer(),
                     Row(
@@ -280,7 +274,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     duration: kThemeAnimationDuration,
                                     opacity: bottomPercent < 1 ? 0 : 1,
                                     child: Text(
-                                      "Actividad",
+                                      "Ciudad",
                                       style: TextStyle(
                                           fontSize:
                                               lerpDouble(20, 40, topPercent),
@@ -417,7 +411,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                       height: 20,
                     ),
                     Text(
-                      "LUGARES EN ESTA COLECCIÒN",
+                      "ACTIVIDADES EN ESTA CIUDAD",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     )
                   ],

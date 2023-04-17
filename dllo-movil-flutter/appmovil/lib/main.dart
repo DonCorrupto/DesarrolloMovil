@@ -1,5 +1,6 @@
 import 'package:appmovil/pages/home.dart';
 import 'package:appmovil/pages/actividades.dart';
+import 'package:appmovil/pages/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: Paises(),
+      debugShowCheckedModeBanner: false,
+      home: Login(),
       //  Scaffold(
       //     appBar: AppBar(
       //       title: const Text("To Do"),
