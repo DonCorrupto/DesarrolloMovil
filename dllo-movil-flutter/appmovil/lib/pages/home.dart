@@ -1,3 +1,4 @@
+import 'package:appmovil/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -79,7 +80,12 @@ class _Home extends State<Home> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.deepPurple)),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Login()));
+                          },
                           child: Text(
                             "                   Get Started                      ",
                             style: GoogleFonts.plusJakartaSans(
