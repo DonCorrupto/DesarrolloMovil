@@ -1,5 +1,5 @@
-import 'package:appmovil/controller/actividades.dart';
-import 'package:appmovil/pages/actividades.dart';
+import 'package:appmovil/controller/ciudades.dart';
+import 'package:appmovil/pages/ciudades.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/animation_builder/play_animation_builder.dart';
@@ -26,7 +26,8 @@ class _LoginState extends State<Login> {
                   height: 400,
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: NetworkImage("https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/background.png"),
+                          image: NetworkImage(
+                              "https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/background.png"),
                           fit: BoxFit.fill)),
                   child: Stack(
                     children: <Widget>[
@@ -37,8 +38,8 @@ class _LoginState extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image:
-                                      NetworkImage("https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/light-1.png"))),
+                                  image: NetworkImage(
+                                      "https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/light-1.png"))),
                         ),
                       ),
                       Positioned(
@@ -48,8 +49,8 @@ class _LoginState extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image:
-                                      NetworkImage("https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/light-2.png"))),
+                                  image: NetworkImage(
+                                      "https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/light-2.png"))),
                         ),
                       ),
                       Positioned(
@@ -60,8 +61,8 @@ class _LoginState extends State<Login> {
                         child: Container(
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image:
-                                      NetworkImage("https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/clock.png"))),
+                                  image: NetworkImage(
+                                      "https://raw.githubusercontent.com/afgprogrammer/Flutter-Login-Page-UI/master/assets/images/clock.png"))),
                         ),
                       ),
                       Positioned(
@@ -148,9 +149,9 @@ class _LoginState extends State<Login> {
                         ),
                         onTap: () {
                           Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Paises()));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Ciudades()));
                         },
                       ),
                       SizedBox(

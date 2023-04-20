@@ -1,16 +1,17 @@
 import 'dart:ui';
 
+import 'package:appmovil/pages/actividades.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Actividades extends StatefulWidget {
+class Ciudades extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _Actividades();
+    return _Ciudades();
   }
 }
 
-class _Actividades extends State<Actividades> {
+class _Ciudades extends State<Ciudades> {
   List<dynamic> image = [
     "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
@@ -19,8 +20,108 @@ class _Actividades extends State<Actividades> {
 
   @override
   Widget build(BuildContext context) {
-    return PlaceDetailScreen(
-        image: image, screenHeight: MediaQuery.of(context).size.height);
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: Text(
+            "Ciudades",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        body: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          itemCount: image.length,
+          itemBuilder: (context, index) {
+            return InkWell(
+              onTap: () async {
+                Navigator.push(context, PageRouteBuilder(
+                  pageBuilder: (_, animation, __) {
+                    return FadeTransition(
+                        opacity: animation,
+                        child: PlaceDetailScreen(
+                          image: image,
+                          screenHeight: MediaQuery.of(context).size.height,
+                        ));
+                  },
+                ));
+              },
+              child: Container(
+                height: 400,
+                margin: EdgeInsets.only(bottom: 15, top: 10),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(image[index]),
+                      fit: BoxFit.cover,
+                    )),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(
+                              "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Usuario",
+                                style: TextStyle(color: Colors.white)),
+                            Text("Creador de Contenido",
+                                style: TextStyle(color: Colors.white70))
+                          ],
+                        ),
+                        Spacer(),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.more_horiz,
+                              color: Colors.white,
+                            ))
+                      ],
+                    ),
+                    Spacer(),
+                    Text("Ciudad",
+                        style: TextStyle(fontSize: 30, color: Colors.white)),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      child: Text("Pais",
+                          style: TextStyle(fontSize: 20, color: Colors.white)),
+                    ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        TextButton.icon(
+                            onPressed: () {},
+                            style: TextButton.styleFrom(
+                                primary: Colors.white, shape: StadiumBorder()),
+                            icon: Icon(CupertinoIcons.heart),
+                            label: Text("500"))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ));
   }
 }
 
@@ -178,7 +279,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     duration: kThemeAnimationDuration,
                                     opacity: bottomPercent < 1 ? 0 : 1,
                                     child: Text(
-                                      "Actividad",
+                                      "Ciudad",
                                       style: TextStyle(
                                           fontSize:
                                               lerpDouble(20, 40, topPercent),
@@ -195,13 +296,13 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     child: Opacity(
                                       opacity: topPercent,
                                       child: Text(
-                                        "Ciudad",
-                                        style: TextStyle(
-                                            fontSize:
-                                                lerpDouble(20, 30, topPercent),
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      "Pais",
+                                      style: TextStyle(
+                                          fontSize:
+                                              lerpDouble(20, 30, topPercent),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                     )),
                               )
                             ],
@@ -232,7 +333,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           CupertinoIcons.heart,
                                           size: 26,
                                         ),
-                                        label: Text("300")),
+                                        label: Text("500")),
                                     Spacer(),
                                     TextButton.icon(
                                         onPressed: () {},
@@ -248,7 +349,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           Icons.check_circle_outline_outlined,
                                           size: 26,
                                         ),
-                                        label: Text("Check-in")),
+                                        label: Text("Checkin")),
                                   ],
                                 ),
                               ),
@@ -272,15 +373,30 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                       top: Radius.circular(30))),
                               child: Row(
                                 children: [
-                                  Icon(Icons.location_on,
-                                      color: Colors.black26),
-                                  Flexible(
-                                      child: Text(
-                                    "LOCALIZACIÒN",
-                                    style: TextStyle(color: Colors.blue),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ))
+                                  CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Usuario", style: TextStyle()),
+                                      Text("Creador de Contenido",
+                                          style: TextStyle(color: Colors.grey))
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.more_horiz,
+                                        color: Colors.white,
+                                      ))
                                 ],
                               ),
                             ),
@@ -298,47 +414,143 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, color: Colors.black26),
+                        Flexible(
+                            child: Text(
+                          "LOCALIZACIÒN",
+                          style: TextStyle(color: Colors.blue),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Text(
                         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
                     SizedBox(
                       height: 20,
                     ),
                     Text(
-                      "COMENTARIOS:",
+                      "ACTIVIDADES EN ESTA CIUDAD",
                       style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    )
                   ],
                 ),
               ),
             )),
-            //ARREGLAR TAMAÑO DEL BOX PORQUE NO SE ADAPTA AL TAMAÑO
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 10000,
+                height: 180,
                 child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemExtent: 90,
+                  scrollDirection: Axis.horizontal,
+                  itemExtent: 150,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: 5,
+                  itemCount: widget.image.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      elevation: 5,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text("Usuario"),
-                            subtitle: Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry."),
-                          )
-                        ],
+                    final collectionPage = widget.image[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: InkWell(
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              collectionPage,
+                              fit: BoxFit.cover,
+                            )),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Actividades()));
+                        },
                       ),
                     );
                   },
                 ),
               ),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 150,
+              ),
             )
           ],
         ),
+        ValueListenableBuilder<double>(
+          valueListenable: bottomPercentNotifier,
+          builder: (context, value, child) {
+            return Positioned.fill(
+                top: null, bottom: -130 * (1 - value), child: child!);
+          },
+          child: Container(
+            height: 130,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white.withOpacity(0),
+                  Colors.white,
+                ],
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  height: 60,
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  decoration: BoxDecoration(
+                      color: Colors.deepPurple.shade800,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    children: [
+                      for (var i = 0; i < 3; i++)
+                        Align(
+                          widthFactor: .7,
+                          child: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Comentarios",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "120",
+                        style: TextStyle(
+                            color: Colors.white70, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(Icons.arrow_forward)
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
       ],
     ));
   }

@@ -1,4 +1,6 @@
+import 'package:appmovil/pages/crear_cuenta.dart';
 import 'package:appmovil/pages/login.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -120,14 +122,21 @@ class _Home extends State<Home> {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: 'Register',
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.08,
-                                      color: Color(0xff009b8d),
-                                    ),
-                                  ),
+                                      text: 'Register',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.08,
+                                        color: Color(0xff009b8d),
+                                      ),
+                                      recognizer: new TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CrearCuenta()));
+                                        }),
                                 ],
                               ),
                             )),
