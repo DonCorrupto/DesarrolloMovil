@@ -68,33 +68,6 @@ class _Ciudades extends State<Ciudades> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Usuario",
-                                style: TextStyle(color: Colors.white)),
-                            Text("Creador de Contenido",
-                                style: TextStyle(color: Colors.white70))
-                          ],
-                        ),
-                        Spacer(),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.more_horiz,
-                              color: Colors.white,
-                            ))
-                      ],
-                    ),
                     Spacer(),
                     Text("Ciudad",
                         style: TextStyle(fontSize: 30, color: Colors.white)),
@@ -296,13 +269,13 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     child: Opacity(
                                       opacity: topPercent,
                                       child: Text(
-                                      "Pais",
-                                      style: TextStyle(
-                                          fontSize:
-                                              lerpDouble(20, 30, topPercent),
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                        "Pais",
+                                        style: TextStyle(
+                                            fontSize:
+                                                lerpDouble(20, 30, topPercent),
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     )),
                               )
                             ],
@@ -337,6 +310,17 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     Spacer(),
                                     TextButton.icon(
                                         onPressed: () {},
+                                        icon:
+                                            Icon(CupertinoIcons.bag_badge_plus),
+                                        label: Text("Deseos")),
+                                    TextButton.icon(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Actividades()));
+                                        },
                                         style: TextButton.styleFrom(
                                             backgroundColor:
                                                 Colors.blue.shade100,
@@ -373,23 +357,15 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                       top: Radius.circular(30))),
                               child: Row(
                                 children: [
-                                  CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("Usuario", style: TextStyle()),
-                                      Text("Creador de Contenido",
-                                          style: TextStyle(color: Colors.grey))
-                                    ],
-                                  ),
+                                  Icon(Icons.location_on,
+                                      color: Colors.black26),
+                                  Flexible(
+                                      child: Text(
+                                    "LOCALIZACIÒN",
+                                    style: TextStyle(color: Colors.blue),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
                                   Spacer(),
                                   IconButton(
                                       onPressed: () {},
@@ -414,18 +390,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, color: Colors.black26),
-                        Flexible(
-                            child: Text(
-                          "LOCALIZACIÒN",
-                          style: TextStyle(color: Colors.blue),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ))
-                      ],
-                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -475,82 +439,11 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             ),
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 150,
+                height: 20,
               ),
             )
           ],
         ),
-        ValueListenableBuilder<double>(
-          valueListenable: bottomPercentNotifier,
-          builder: (context, value, child) {
-            return Positioned.fill(
-                top: null, bottom: -130 * (1 - value), child: child!);
-          },
-          child: Container(
-            height: 130,
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.white.withOpacity(0),
-                  Colors.white,
-                ],
-              ),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  height: 60,
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                      color: Colors.deepPurple.shade800,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Row(
-                    children: [
-                      for (var i = 0; i < 3; i++)
-                        Align(
-                          widthFactor: .7,
-                          child: CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.white,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://us.123rf.com/450wm/tuktukdesign/tuktukdesign1712/tuktukdesign171200016/91432570-icono-de-usuario-vector-s%C3%ADmbolo-de-s%C3%ADmbolo-de-persona-masculina-avatar-iniciar-sesi%C3%B3n-ilustraci%C3%B3n-de.jpg"),
-                              ),
-                            ),
-                          ),
-                        ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Comentarios",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "120",
-                        style: TextStyle(
-                            color: Colors.white70, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(Icons.arrow_forward)
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        )
       ],
     ));
   }

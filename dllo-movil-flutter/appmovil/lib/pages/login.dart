@@ -1,5 +1,6 @@
 import 'package:appmovil/controller/ciudades.dart';
 import 'package:appmovil/pages/ciudades.dart';
+import 'package:appmovil/pages/main_app.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:simple_animations/animation_builder/play_animation_builder.dart';
@@ -151,7 +152,7 @@ class _LoginState extends State<Login> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Ciudades()));
+                                  builder: (context) => MainAppViaje()));
                         },
                       ),
                       SizedBox(
