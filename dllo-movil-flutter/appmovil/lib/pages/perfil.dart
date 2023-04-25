@@ -10,6 +10,13 @@ class perfil extends StatefulWidget {
 }
 
 class _perfilState extends State<perfil> {
+
+  List<dynamic> image = [
+    "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
+    "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
+    "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
+  ];
+  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -152,7 +159,7 @@ class CustomCard extends StatelessWidget {
                     topRight: Radius.circular(20),
                   ),
                   child: Image.network(
-                    'https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/breakfast.jpg',
+                    'https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),

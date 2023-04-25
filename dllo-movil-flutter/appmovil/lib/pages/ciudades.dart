@@ -309,7 +309,13 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                         label: Text("500")),
                                     Spacer(),
                                     TextButton.icon(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Actividades(estado: 0,)));
+                                        },
                                         icon:
                                             Icon(CupertinoIcons.bag_badge_plus),
                                         label: Text("Deseos")),
@@ -319,7 +325,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Actividades()));
+                                                      Actividades(estado: 1,)));
                                         },
                                         style: TextButton.styleFrom(
                                             backgroundColor:
@@ -425,12 +431,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                               collectionPage,
                               fit: BoxFit.cover,
                             )),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Actividades()));
-                        },
                       ),
                     );
                   },

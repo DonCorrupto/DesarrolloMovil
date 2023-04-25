@@ -1,4 +1,5 @@
 import 'package:appmovil/controller/ciudades.dart';
+import 'package:appmovil/pages/actividades.dart';
 import 'package:appmovil/pages/ciudades.dart';
 import 'package:appmovil/pages/main_app.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +16,11 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  Map<String, dynamic> userLogin = {
+    "email": "",
+    "password": "",
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,21 +113,33 @@ class _LoginState extends State<Login> {
                                       bottom: BorderSide(
                                           color: Colors.grey.shade100))),
                               child: TextField(
+                                keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: "Email or Phone number",
+                                    hintText: "Email",
                                     hintStyle:
                                         TextStyle(color: Colors.grey[400])),
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    userLogin["email"] = value;
+                                  });
+                                },
                               ),
                             ),
                             Container(
                               padding: EdgeInsets.all(8.0),
                               child: TextField(
+                                obscureText: true,
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     hintText: "Password",
                                     hintStyle:
                                         TextStyle(color: Colors.grey[400])),
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    userLogin["password"] = value;
+                                  });
+                                },
                               ),
                             )
                           ],
@@ -149,10 +167,9 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MainAppViaje()));
+                          print(userLogin);
+                          Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MainAppViaje()));
                         },
                       ),
                       SizedBox(

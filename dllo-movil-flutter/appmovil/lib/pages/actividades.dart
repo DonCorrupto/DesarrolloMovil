@@ -1,10 +1,14 @@
 import 'dart:ui';
 
+import 'package:appmovil/pages/check_lista.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class Actividades extends StatefulWidget {
+  final int estado;
+  Actividades({required this.estado});
+
   @override
   State<StatefulWidget> createState() {
     return _Actividades();
@@ -53,18 +57,41 @@ class _Actividades extends State<Actividades> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
-          "Actividades",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.black),
-        ),
+        title: widget.estado == 0
+            ? Text(
+                "Lista de Deseos",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              )
+            : Text(
+                "Check In",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
+              ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.library_add,
-              color: Colors.black,
-            ),
+            onPressed: widget.estado == 0
+                ? () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => checkLista()));
+                  }
+                : () {
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => checkLista()));
+                },
+            icon: widget.estado == 0
+                ? Icon(
+                    Icons.add_location_alt_outlined,
+                    color: Colors.black,
+                  )
+                : Icon(
+                    Icons.library_add,
+                    color: Colors.black,
+                  ),
           )
         ],
       ),

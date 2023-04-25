@@ -1,3 +1,4 @@
+import 'package:appmovil/pages/login.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_input.dart';
@@ -10,7 +11,6 @@ class CrearCuenta extends StatefulWidget {
 }
 
 class _CrearCuentaState extends State<CrearCuenta> {
-
   Map<String, dynamic> userInfo = {
     "name": "",
     "email": "",
@@ -20,7 +20,6 @@ class _CrearCuentaState extends State<CrearCuenta> {
     "semester": 0.0,
     "is_student": false,
   };
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +70,8 @@ class _CrearCuentaState extends State<CrearCuenta> {
                     if (state != null && state.validate()) {
                       print("OK");
                       print(userInfo);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Login()));
                     } else {
                       print("Form invalido");
                     }
