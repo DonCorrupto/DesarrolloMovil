@@ -29,45 +29,79 @@ class _listDeseosState extends State<listDeseos> {
         ),
         body: ListWheelScrollView.useDelegate(
           physics: FixedExtentScrollPhysics(),
-          itemExtent: 250,
+          itemExtent: 400,
           diameterRatio: 6,
           childDelegate: ListWheelChildBuilderDelegate(
             childCount: image.length,
             builder: (context, index) {
-              return Container(
-                height: 400,
-                margin: EdgeInsets.only(bottom: 15, top: 10),
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: NetworkImage(image[index]),
-                      fit: BoxFit.cover,
-                    )),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Spacer(),
-                    Text("Actividad",
-                        style: TextStyle(fontSize: 30, color: Colors.white)),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Spacer(),
-                    Row(
+              return Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
                       children: [
+                        SizedBox(
+                          width: 145,
+                        ),
+                        Text(
+                          "Ciudad-Pais",
+                          style: TextStyle(
+                              color: Colors.blue.shade800,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 100,
+                        ),
                         IconButton(
                             onPressed: () {},
-                            style: TextButton.styleFrom(
-                                primary: Colors.white, shape: StadiumBorder()),
                             icon: Icon(
-                              CupertinoIcons.bin_xmark,
-                              color: Colors.red,
+                              Icons.add_box_outlined,
+                              color: Colors.green,
                             ))
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 400,
+                      margin: EdgeInsets.only(bottom: 15, top: 10),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: NetworkImage(image[index]),
+                            fit: BoxFit.cover,
+                          )),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Spacer(),
+                          Text("Actividad",
+                              style:
+                                  TextStyle(fontSize: 30, color: Colors.white)),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Spacer(),
+                          Row(
+                            children: [
+                              IconButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                      primary: Colors.white,
+                                      shape: StadiumBorder()),
+                                  icon: Icon(
+                                    CupertinoIcons.bin_xmark,
+                                    color: Colors.red,
+                                  ))
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           ),

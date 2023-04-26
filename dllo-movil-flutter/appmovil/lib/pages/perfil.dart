@@ -131,10 +131,8 @@ class CustomElevatedButton extends StatelessWidget {
           )
         : ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => listDeseos()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => listDeseos()));
             },
             child: Text('$text'),
             style: ElevatedButton.styleFrom(
@@ -249,18 +247,21 @@ class CustomCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Gramercy Tavern',
+                        'Pais-Ciudad',
                         style: GoogleFonts.josefinSans(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(Icons.more_vert),
+                      IconButton(
+                          onPressed: () {
+                          },
+                          icon: Icon(Icons.more_vert))
                     ],
                   ),
                   SizedBox(height: 10),
                   Text(
-                    '42 E 20th St New York 23 USA',
+                    'Ubicación',
                     style: GoogleFonts.josefinSans(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

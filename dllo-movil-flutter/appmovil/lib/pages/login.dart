@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage>{
                                 ),
                                 onPressed: (){
                                   //After successful login we will redirect to profile page. Let's create profile page now
-                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainAppViaje()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => MainAppViaje()));
                                 },
                               ),
                             ),

@@ -3,6 +3,7 @@ import 'package:appmovil/pages/crear_cuenta.dart';
 import 'package:appmovil/pages/home.dart';
 import 'package:appmovil/pages/ciudades.dart';
 import 'package:appmovil/pages/check_lista.dart';
+import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/login.dart';
 import 'package:appmovil/pages/perfil.dart';
 import 'package:flutter/material.dart';
