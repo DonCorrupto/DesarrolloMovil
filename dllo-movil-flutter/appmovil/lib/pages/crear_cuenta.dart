@@ -26,7 +26,7 @@ class _CrearCuentaState extends State<CrearCuenta> {
     GlobalKey<FormState> formKey = GlobalKey();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Formulario"),
+        title: const Text("Crear Cuenta"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -34,7 +34,7 @@ class _CrearCuentaState extends State<CrearCuenta> {
           key: formKey,
           child: ListView(
             children: [
-              const Text("Formulario"),
+              const Text("Crear Cuenta"),
               // Nombre
               CustomInput(
                 userInfo: userInfo,
