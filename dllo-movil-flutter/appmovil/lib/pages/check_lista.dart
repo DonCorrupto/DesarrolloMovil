@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 
 class checkLista extends StatefulWidget {
-  const checkLista({super.key});
+  final int estado;
+  checkLista({required this.estado});
 
   @override
   State<checkLista> createState() => _checkListaState();
@@ -17,20 +18,36 @@ class _checkListaState extends State<checkLista> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text(
-          "Lista de Deseos",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.black),
-        ),
+        title: widget.estado == 0
+            ? Text(
+                "Verifica tu lista de Deseos",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              )
+            : Text(
+                "Verifica tu Itinerario",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
         actions: [
           IconButton(
-            onPressed: () {
-              QuickAlert.show(
-                  context: context,
-                  type: QuickAlertType.success,
-                  text: "Hecho");
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => Ciudades()));
-            },
+            onPressed: widget.estado == 0
+                ? () {
+                    QuickAlert.show(
+                        //SE AGREGA A LA LISTA DE DESEOS Y SE MUESTRA EN EL PERFIL
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Hecho");
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => Ciudades()));
+                  }
+                : () {
+                    //SE AGREGA AL ITINERARIO Y SE MUESTRA EN EL PERFIL
+                    QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.success,
+                        text: "Hecho");
+                    //Navigator.push(context, MaterialPageRoute(builder: (context) => Ciudades()));
+                  },
             icon: Icon(
               Icons.done,
               color: Colors.green,
@@ -80,54 +97,102 @@ class _checkListaState extends State<checkLista> {
                                   width: 10,
                                 ),
                                 Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Actividad",
-                                        style: TextStyle(
-                                            color: Colors.blue.shade800,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 2,
-                                      ),
-                                      Text(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                            color: Colors.blue.shade800,
-                                            fontSize: 12),
-                                      ),
-                                      Row(
+                                  child: widget.estado == 0
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Fecha",
+                                              "Actividad",
                                               style: TextStyle(
-                                                  color: Colors.purple.shade800,
-                                                  fontSize: 15),
+                                                  color: Colors.blue.shade800,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                            IconButton(
-                                                alignment: Alignment.bottomLeft,
-                                                onPressed: () {
-                                                  QuickAlert.show(
-                                                      context: context,
-                                                      type: QuickAlertType
-                                                          .success,
-                                                      text: "Eliminado");
-                                                },
-                                                icon: Icon(
-                                                  Icons.clear_rounded,
-                                                  color: Colors.red,
-                                                ))
-                                          ]),
-                                    ],
-                                  ),
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                            Text(
+                                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                  color: Colors.blue.shade800,
+                                                  fontSize: 12),
+                                            ),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Fecha",
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .purple.shade800,
+                                                        fontSize: 15),
+                                                  ),
+                                                  IconButton(
+                                                      alignment:
+                                                          Alignment.bottomLeft,
+                                                      onPressed: () {
+                                                        QuickAlert.show(
+                                                            context: context,
+                                                            type: QuickAlertType
+                                                                .success,
+                                                            text: "Eliminado");
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.clear_rounded,
+                                                        color: Colors.red,
+                                                      ))
+                                                ]),
+                                          ],
+                                        )
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Actividad",
+                                              style: TextStyle(
+                                                  color: Colors.blue.shade800,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                            Text(
+                                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                  color: Colors.blue.shade800,
+                                                  fontSize: 12),
+                                            ),
+                                            Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        QuickAlert.show(
+                                                            context: context,
+                                                            type: QuickAlertType
+                                                                .success,
+                                                            text: "Eliminado");
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.clear_rounded,
+                                                        color: Colors.red,
+                                                      ))
+                                                ]),
+                                          ],
+                                        ),
                                 )
                               ],
                             ))),

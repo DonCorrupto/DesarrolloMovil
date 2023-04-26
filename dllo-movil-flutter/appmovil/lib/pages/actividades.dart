@@ -59,14 +59,14 @@ class _Actividades extends State<Actividades> {
         centerTitle: true,
         title: widget.estado == 0
             ? Text(
-                "Lista de Deseos",
+                "Agrega las Actividades a tu Lista de Deseos",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 13),
               )
             : Text(
-                "Check In",
+                "Agrega las Actividades a tu Itinerario",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: Colors.black, fontSize: 15),
               ),
         actions: [
           IconButton(
@@ -75,13 +75,13 @@ class _Actividades extends State<Actividades> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => checkLista()));
+                            builder: (context) => checkLista(estado: 0,)));
                   }
                 : () {
                   Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => checkLista()));
+                            builder: (context) => checkLista(estado: 1,)));
                 },
             icon: widget.estado == 0
                 ? Icon(
