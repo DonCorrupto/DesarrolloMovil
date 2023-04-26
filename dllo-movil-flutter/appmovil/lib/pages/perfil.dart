@@ -1,3 +1,5 @@
+import 'package:appmovil/pages/list_Itinerario.dart';
+import 'package:appmovil/pages/list_deseos.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,13 +12,12 @@ class perfil extends StatefulWidget {
 }
 
 class _perfilState extends State<perfil> {
-
   List<dynamic> image = [
     "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
-  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -65,10 +66,12 @@ class _perfilState extends State<perfil> {
                         CustomElevatedButton(
                           text: 'Edit Profile',
                           primary: Color(0xff4245ff),
+                          estadoBoton: 0,
                         ),
                         CustomElevatedButton(
                           text: 'Futuros Viajes',
                           primary: Color(0xff4245ff),
+                          estadoBoton: 1,
                         ),
                       ],
                     )
@@ -89,38 +92,71 @@ class _perfilState extends State<perfil> {
 }
 
 class CustomElevatedButton extends StatelessWidget {
-  const CustomElevatedButton({Key? key, required this.text, this.primary})
+  const CustomElevatedButton(
+      {Key? key, required this.text, this.primary, required this.estadoBoton})
       : super(key: key);
 
   final String text;
   final Color? primary;
+  final int estadoBoton;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return ElevatedButton(
-      onPressed: () {},
-      child: Text('$text'),
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        side: primary != null
-            ? BorderSide.none
-            : BorderSide(
-                width: 1,
-                color: Colors.grey,
+    return estadoBoton == 0
+        ? ElevatedButton(
+            onPressed: () {
+              print("Prueba edit profile");
+            },
+            child: Text('$text'),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-        fixedSize: Size(size.width * 0.4, size.height * .065),
-        padding: const EdgeInsets.all(10),
-        primary: primary != null ? primary : Colors.white,
-        onPrimary: primary != null ? Colors.white : Colors.grey[500],
-        textStyle: GoogleFonts.josefinSans(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
+              side: primary != null
+                  ? BorderSide.none
+                  : BorderSide(
+                      width: 1,
+                      color: Colors.grey,
+                    ),
+              fixedSize: Size(size.width * 0.4, size.height * .065),
+              padding: const EdgeInsets.all(10),
+              primary: primary != null ? primary : Colors.white,
+              onPrimary: primary != null ? Colors.white : Colors.grey[500],
+              textStyle: GoogleFonts.josefinSans(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          )
+        : ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => listDeseos()));
+            },
+            child: Text('$text'),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              side: primary != null
+                  ? BorderSide.none
+                  : BorderSide(
+                      width: 1,
+                      color: Colors.grey,
+                    ),
+              fixedSize: Size(size.width * 0.4, size.height * .065),
+              padding: const EdgeInsets.all(10),
+              primary: primary != null ? primary : Colors.white,
+              onPrimary: primary != null ? Colors.white : Colors.grey[500],
+              textStyle: GoogleFonts.josefinSans(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
   }
 }
 
@@ -158,9 +194,17 @@ class CustomCard extends StatelessWidget {
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
                   ),
-                  child: Image.network(
-                    'https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg',
-                    fit: BoxFit.cover,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => listItinerario()));
+                    },
+                    child: Image.network(
+                      'https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 Positioned(

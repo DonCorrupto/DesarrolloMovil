@@ -318,7 +318,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                         },
                                         icon:
                                             Icon(CupertinoIcons.bag_badge_plus),
-                                        label: Text("Deseos")),
+                                        label: Text("Futuros Viajes", style: TextStyle(fontSize: 12),)),
                                     TextButton.icon(
                                         onPressed: () {
                                           Navigator.push(
@@ -339,7 +339,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           Icons.check_circle_outline_outlined,
                                           size: 26,
                                         ),
-                                        label: Text("Checkin")),
+                                        label: Text("Agregar al Itinerario", style: TextStyle(fontSize: 12),)),
                                   ],
                                 ),
                               ),

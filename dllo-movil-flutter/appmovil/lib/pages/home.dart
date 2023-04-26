@@ -86,7 +86,7 @@ class _Home extends State<Home> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Login()));
+                                    builder: (context) => const LoginPage()));
                           },
                           child: Text(
                             "                   Get Started                      ",

@@ -33,11 +33,11 @@ class _MainAppViaje extends State<MainAppViaje> {
           items: const [
             BottomNavigationBarItem(
               label: "Ciudades",
-              icon: Icon(Icons.home, color: Colors.red,),
+              icon: Icon(Icons.location_city, color: Colors.red,),
             ),
             BottomNavigationBarItem(
               label: "Perfil",backgroundColor:Colors.red,
-              icon: Icon(Icons.people, color: Colors.red,),
+              icon: Icon(Icons.person, color: Colors.red,),
             )
           ],
         ),
