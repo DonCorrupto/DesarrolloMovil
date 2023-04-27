@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'dart:ui';
 
 import 'package:appmovil/pages/check_lista.dart';
@@ -21,6 +22,8 @@ class _Actividades extends State<Actividades> {
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
+
+  TextEditingController _date = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +75,56 @@ class _Actividades extends State<Actividades> {
           IconButton(
             onPressed: widget.estado == 0
                 ? () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Seleccione una fecha"),
+                          content: TextField(
+                            controller: _date,
+                            decoration: InputDecoration(
+                                icon: Icon(Icons.calendar_today_rounded),
+                                labelText: "Ingrese la Fecha"),
+                            onTap: () async {
+                              DateTime? pickeddate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101));
+                            },
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Actividades(
+                                            estado: 0,
+                                          ))),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => checkLista(
+                                            estado: 1,
+                                          ))),
+                              child: const Text('OK'),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
+                : () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => checkLista(estado: 0,)));
-                  }
-                : () {
-                  Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => checkLista(estado: 1,)));
-                },
+                            builder: (context) => checkLista(
+                                  estado: 1,
+                                )));
+                  },
             icon: widget.estado == 0
                 ? Icon(
                     Icons.add_location_alt_outlined,

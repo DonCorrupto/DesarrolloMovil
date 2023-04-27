@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _Home();
@@ -39,7 +41,7 @@ class _Home extends State<Home> {
               children: [
                 Center(
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 9),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 9),
                     constraints: BoxConstraints(maxWidth: 296),
                     child: Text(
                       "We are here to make your holiday easier",
