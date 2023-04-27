@@ -1,9 +1,7 @@
-import 'dart:html';
-import 'dart:ui';
-
 import 'package:appmovil/pages/check_lista.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class Actividades extends StatefulWidget {
@@ -91,6 +89,12 @@ class _Actividades extends State<Actividades> {
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2101));
+                              if (pickeddate != null) {
+                                setState(() {
+                                  _date.text = DateFormat('yyyy-MM-dd')
+                                      .format(pickeddate);
+                                });
+                              }
                             },
                           ),
                           actions: <Widget>[
@@ -108,7 +112,7 @@ class _Actividades extends State<Actividades> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => checkLista(
-                                            estado: 1,
+                                            estado: 0,
                                           ))),
                               child: const Text('OK'),
                             )

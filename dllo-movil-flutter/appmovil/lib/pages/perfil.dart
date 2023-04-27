@@ -1,3 +1,4 @@
+import 'package:appmovil/pages/edit_profile.dart';
 import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/list_deseos.dart';
 import 'package:flutter/cupertino.dart';
@@ -106,7 +107,8 @@ class CustomElevatedButton extends StatelessWidget {
     return estadoBoton == 0
         ? ElevatedButton(
             onPressed: () {
-              print("Prueba edit profile");
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => editProfile()));
             },
             child: Text('$text'),
             style: ElevatedButton.styleFrom(
