@@ -46,6 +46,7 @@ class _LoginState extends State<Login> {
                           ),
                           onPressed: () async {
                             await FirebaseService.signInWithGoogle();
+                            
                           },
                           child: const Text('Google'),
                         ),
