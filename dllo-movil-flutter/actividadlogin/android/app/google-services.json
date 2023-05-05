@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1059634537291",
+    "project_id": "authflutter-ad709",
+    "storage_bucket": "authflutter-ad709.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1059634537291:android:c31ac04e270fd3f1a63ece",
+        "android_client_info": {
+          "package_name": "com.example.actividadlogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1059634537291-eda8aobgs105hpb93c1gov191b1g7ab1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.actividadlogin",
+            "certificate_hash": "a6b1ad90a7710774be5cc166cc3a66075fa3f6c6"
+          }
+        },
+        {
+          "client_id": "1059634537291-onvmggup184hh2a763pnrfpcde3cf1iu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA7qcQBeRsmvgpYETVWwKTmtvSs431mMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1059634537291-6dmkupoeb2o7n18har3aunkbivck248q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
