@@ -16,4 +16,4 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
-![Image text]https://github.com/DonCorrupto/DesarrolloMovil/main/DesarrolloMovil/raw/main/thumbnail_image.png
+[![thumbnail-image.png](https://i.postimg.cc/Y0YVmsxQ/thumbnail-image.png)](https://postimg.cc/hQ4MkM6G)
