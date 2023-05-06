@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:appmovil/pages/actividades.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class Ciudades extends StatefulWidget {
   @override
@@ -12,11 +15,29 @@ class Ciudades extends StatefulWidget {
 }
 
 class _Ciudades extends State<Ciudades> {
+  final Future<FirebaseApp> _fApp = Firebase.initializeApp();
+
   List<dynamic> image = [
     "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
+
+  dynamic ciudad;
+
+  void obtenerCiudades() async {
+    final ref = FirebaseDatabase.instance.ref();
+    DataSnapshot snapshot = await ref.child('ciudades').get();
+    if (snapshot.exists) { 
+      ciudad = jsonEncode(snapshot.value);
+      print(ciudad);
+      setState(() {
+        ciudad;
+      });
+    } else {
+      print('No data available.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,62 +58,96 @@ class _Ciudades extends State<Ciudades> {
             ),
           ),
         ),
-        body: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          itemCount: image.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () async {
-                Navigator.push(context, PageRouteBuilder(
-                  pageBuilder: (_, animation, __) {
-                    return FadeTransition(
-                        opacity: animation,
-                        child: PlaceDetailScreen(
-                          image: image,
-                          screenHeight: MediaQuery.of(context).size.height,
-                        ));
-                  },
-                ));
-              },
-              child: Container(
-                height: 400,
-                margin: EdgeInsets.only(bottom: 15, top: 10),
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: NetworkImage(image[index]),
-                      fit: BoxFit.cover,
-                    )),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Spacer(),
-                    Text("Ciudad",
-                        style: TextStyle(fontSize: 30, color: Colors.white)),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      child: Text("Pais",
-                          style: TextStyle(fontSize: 20, color: Colors.white)),
-                    ),
-                    Spacer(),
-                    Row(
-                      children: [
-                        TextButton.icon(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                                primary: Colors.white, shape: StadiumBorder()),
-                            icon: Icon(CupertinoIcons.heart),
-                            label: Text("500"))
-                      ],
-                    ),
-                  ],
+        body: FutureBuilder(
+          future: _fApp,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text("Something wrong with firebase");
+            } else if (snapshot.hasData) {
+              obtenerCiudades();
+              return Container(
+                child: Center(
+                  child: ciudad == null
+                      ? CircularProgressIndicator()
+                      : MediaQuery.removePadding(
+                          context: context,
+                          removeTop: true,
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: image.length,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () async {
+                                  Navigator.push(context, PageRouteBuilder(
+                                    pageBuilder: (_, animation, __) {
+                                      return FadeTransition(
+                                          opacity: animation,
+                                          child: PlaceDetailScreen(
+                                            image: image,
+                                            screenHeight: MediaQuery.of(context)
+                                                .size
+                                                .height,
+                                          ));
+                                    },
+                                  ));
+                                },
+                                child: Container(
+                                  height: 400,
+                                  margin: EdgeInsets.only(bottom: 15, top: 10),
+                                  padding: EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: NetworkImage(image[index]),
+                                        fit: BoxFit.cover,
+                                      )),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Spacer(),
+                                      Text("Ciudad",
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.white)),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        child: Text("Pais",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.white)),
+                                      ),
+                                      Spacer(),
+                                      Row(
+                                        children: [
+                                          TextButton.icon(
+                                              onPressed: () {},
+                                              style: TextButton.styleFrom(
+                                                  primary: Colors.white,
+                                                  shape: StadiumBorder()),
+                                              icon: Icon(CupertinoIcons.heart),
+                                              label: Text("500"))
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                 ),
-              ),
-            );
+              );
+            } else {
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           },
         ));
   }
@@ -314,18 +369,25 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Actividades(estado: 0,)));
+                                                      Actividades(
+                                                        estado: 0,
+                                                      )));
                                         },
                                         icon:
                                             Icon(CupertinoIcons.bag_badge_plus),
-                                        label: Text("Futuros Viajes", style: TextStyle(fontSize: 12),)),
+                                        label: Text(
+                                          "Futuros Viajes",
+                                          style: TextStyle(fontSize: 12),
+                                        )),
                                     TextButton.icon(
                                         onPressed: () {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Actividades(estado: 1,)));
+                                                      Actividades(
+                                                        estado: 1,
+                                                      )));
                                         },
                                         style: TextButton.styleFrom(
                                             backgroundColor:
@@ -339,7 +401,10 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           Icons.check_circle_outline_outlined,
                                           size: 26,
                                         ),
-                                        label: Text("Agregar al Itinerario", style: TextStyle(fontSize: 12),)),
+                                        label: Text(
+                                          "Agregar al Itinerario",
+                                          style: TextStyle(fontSize: 12),
+                                        )),
                                   ],
                                 ),
                               ),

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "586872544260",
+    "firebase_url": "https://appmovil-88754-default-rtdb.firebaseio.com",
+    "project_id": "appmovil-88754",
+    "storage_bucket": "appmovil-88754.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586872544260:android:5f09e3c453707812ffa951",
+        "android_client_info": {
+          "package_name": "com.example.appmovil"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586872544260-0r5350fm7vrtglut89i4dvjarut8ngh3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNga5w3WzDO0pyu4U05tpzEuhY8XHelAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586872544260-0r5350fm7vrtglut89i4dvjarut8ngh3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

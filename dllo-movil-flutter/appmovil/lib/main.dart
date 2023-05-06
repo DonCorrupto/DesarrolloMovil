@@ -6,6 +6,7 @@ import 'package:appmovil/pages/check_lista.dart';
 import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/login.dart';
 import 'package:appmovil/pages/perfil.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home:  Home(),
+      home: Ciudades(),
       //  Scaffold(
       //     appBar: AppBar(
       //       title: const Text("To Do"),
