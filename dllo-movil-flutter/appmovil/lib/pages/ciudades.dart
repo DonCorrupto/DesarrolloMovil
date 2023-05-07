@@ -1,13 +1,22 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:appmovil/pages/actividades.dart';
+import 'package:appmovil/controller/ciudades.dart';
+import 'package:appmovil/models/imagenes_model.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../models/ciudades_model.dart';
+import '../models/actividad_model.dart';
+import 'actividades.dart';
+
 class Ciudades extends StatefulWidget {
+  const Ciudades({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _Ciudades();
@@ -15,28 +24,76 @@ class Ciudades extends StatefulWidget {
 }
 
 class _Ciudades extends State<Ciudades> {
-  final Future<FirebaseApp> _fApp = Firebase.initializeApp();
-
   List<dynamic> image = [
     "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
 
-  dynamic ciudad;
+  List infoAllCity = [];
 
-  void obtenerCiudades() async {
-    final ref = FirebaseDatabase.instance.ref();
-    DataSnapshot snapshot = await ref.child('ciudades').get();
-    if (snapshot.exists) { 
-      ciudad = jsonEncode(snapshot.value);
-      print(ciudad);
-      setState(() {
-        ciudad;
+  final _ref = FirebaseDatabase.instance.ref();
+  late StreamSubscription _ciudades;
+
+  void _obtenerCiudades() {
+    dynamic infoCityAct;
+    dynamic infoCityImage;
+
+    _ciudades = _ref.child('ciudades').onValue.listen((event) {
+      final dynamic info = event.snapshot.value;
+
+      info.forEach((key, value) {
+        Map mapa = {'key': key, ...value};
+
+        final String id = mapa['key'];
+
+        //List<String> listaImagenes = mapa['Imagenes'].values.toList();
+        _ref.child('ciudades/$id/Actividad').onValue.listen((event) {
+          final dynamic infoActividad = event.snapshot.value;
+
+          infoActividad.forEach((key, value) {
+            Map mapaActividad = {'key': key, ...value};
+
+            listActividad infoAct = listActividad(
+                name: mapaActividad['name'], imagenes: mapaActividad['imagen']);
+            infoCityAct = infoAct;
+          });
+        });
+
+        _ref.child('ciudades/$id/Imagenes').onValue.listen((event) {
+          final dynamic infoImagenes = event.snapshot.value;
+
+          infoImagenes.forEach((key, value) {
+            listImagenes infoImage = listImagenes(url: value);
+            infoCityImage = infoImage;
+          });
+        });
+
+        Ciudad infoCity = Ciudad(
+            key: mapa['key'],
+            ciudad: mapa['Ciudad'],
+            description: mapa['Descripcion'],
+            follow: mapa['Follow'],
+            location: mapa['Localizacion'],
+            pais: mapa['Pais'],
+            actividad: infoCityAct,
+            imagenes: infoCityImage);
+        infoAllCity.add(infoCity);
       });
-    } else {
-      print('No data available.');
-    }
+
+      print(infoAllCity);
+
+      setState(() {
+        //ciudad = info;
+        //print(ciudad);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _obtenerCiudades();
   }
 
   @override
@@ -58,98 +115,85 @@ class _Ciudades extends State<Ciudades> {
             ),
           ),
         ),
-        body: FutureBuilder(
-          future: _fApp,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Text("Something wrong with firebase");
-            } else if (snapshot.hasData) {
-              obtenerCiudades();
-              return Container(
-                child: Center(
-                  child: ciudad == null
-                      ? CircularProgressIndicator()
-                      : MediaQuery.removePadding(
-                          context: context,
-                          removeTop: true,
-                          child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: image.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () async {
-                                  Navigator.push(context, PageRouteBuilder(
-                                    pageBuilder: (_, animation, __) {
-                                      return FadeTransition(
-                                          opacity: animation,
-                                          child: PlaceDetailScreen(
-                                            image: image,
-                                            screenHeight: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                          ));
-                                    },
-                                  ));
-                                },
-                                child: Container(
-                                  height: 400,
-                                  margin: EdgeInsets.only(bottom: 15, top: 10),
-                                  padding: EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(image[index]),
-                                        fit: BoxFit.cover,
-                                      )),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Spacer(),
-                                      Text("Ciudad",
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.white)),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Container(
-                                        child: Text("Pais",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.white)),
-                                      ),
-                                      Spacer(),
-                                      Row(
-                                        children: [
-                                          TextButton.icon(
-                                              onPressed: () {},
-                                              style: TextButton.styleFrom(
-                                                  primary: Colors.white,
-                                                  shape: StadiumBorder()),
-                                              icon: Icon(CupertinoIcons.heart),
-                                              label: Text("500"))
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+        body: Container(
+          child: Center(
+            child: infoAllCity.isEmpty
+                ? CircularProgressIndicator()
+                : MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      itemCount: image.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () async {
+                            Navigator.push(context, PageRouteBuilder(
+                              pageBuilder: (_, animation, __) {
+                                return FadeTransition(
+                                    opacity: animation,
+                                    child: PlaceDetailScreen(
+                                      image: image,
+                                      screenHeight:
+                                          MediaQuery.of(context).size.height,
+                                    ));
+                              },
+                            ));
+                          },
+                          child: Container(
+                            height: 400,
+                            margin: EdgeInsets.only(bottom: 15, top: 10),
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                  image: NetworkImage(image[index]),
+                                  fit: BoxFit.cover,
+                                )),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Spacer(),
+                                Text("Ciudad",
+                                    style: TextStyle(
+                                        fontSize: 30, color: Colors.white)),
+                                SizedBox(
+                                  height: 10,
                                 ),
-                              );
-                            },
+                                Container(
+                                  child: Text("Pais",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.white)),
+                                ),
+                                Spacer(),
+                                Row(
+                                  children: [
+                                    TextButton.icon(
+                                        onPressed: () {},
+                                        style: TextButton.styleFrom(
+                                            primary: Colors.white,
+                                            shape: StadiumBorder()),
+                                        icon: Icon(CupertinoIcons.heart),
+                                        label: Text("500"))
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                ),
-              );
-            } else {
-              return Container(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+                        );
+                      },
+                    ),
+                  ),
+          ),
         ));
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    _ciudades.cancel();
   }
 }
 
