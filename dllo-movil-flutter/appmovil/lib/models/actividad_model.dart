@@ -1,9 +1,9 @@
 class listActividad {
-  String? name;
-  String? imagenes;
+  late String name;
+  late String imagenes;
 
-  listActividad({
-    required this.name,
-    required this.imagenes
-  });
+  listActividad(this.name, this.imagenes);
+
+  
+
 }

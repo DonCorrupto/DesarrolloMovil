@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:appmovil/controller/ciudades.dart';
 import 'package:appmovil/models/imagenes_model.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/ciudades_model.dart';
 import '../models/actividad_model.dart';
@@ -30,74 +30,19 @@ class _Ciudades extends State<Ciudades> {
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
 
-  List infoAllCity = [];
+  dynamic infoAllCity;
 
   final _ref = FirebaseDatabase.instance.ref();
   late StreamSubscription _ciudades;
 
-  void _obtenerCiudades() {
-    dynamic infoCityAct;
-    dynamic infoCityImage;
-
-    _ciudades = _ref.child('ciudades').onValue.listen((event) {
-      final dynamic info = event.snapshot.value;
-
-      info.forEach((key, value) {
-        Map mapa = {'key': key, ...value};
-
-        final String id = mapa['key'];
-
-        //List<String> listaImagenes = mapa['Imagenes'].values.toList();
-        _ref.child('ciudades/$id/Actividad').onValue.listen((event) {
-          final dynamic infoActividad = event.snapshot.value;
-
-          infoActividad.forEach((key, value) {
-            Map mapaActividad = {'key': key, ...value};
-
-            listActividad infoAct = listActividad(
-                name: mapaActividad['name'], imagenes: mapaActividad['imagen']);
-            infoCityAct = infoAct;
-          });
-        });
-
-        _ref.child('ciudades/$id/Imagenes').onValue.listen((event) {
-          final dynamic infoImagenes = event.snapshot.value;
-
-          infoImagenes.forEach((key, value) {
-            listImagenes infoImage = listImagenes(url: value);
-            infoCityImage = infoImage;
-          });
-        });
-
-        Ciudad infoCity = Ciudad(
-            key: mapa['key'],
-            ciudad: mapa['Ciudad'],
-            description: mapa['Descripcion'],
-            follow: mapa['Follow'],
-            location: mapa['Localizacion'],
-            pais: mapa['Pais'],
-            actividad: infoCityAct,
-            imagenes: infoCityImage);
-        infoAllCity.add(infoCity);
-      });
-
-      print(infoAllCity);
-
-      setState(() {
-        //ciudad = info;
-        //print(ciudad);
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _obtenerCiudades();
   }
 
   @override
   Widget build(BuildContext context) {
+    final data = _ref.child('ciudades');
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -115,77 +60,92 @@ class _Ciudades extends State<Ciudades> {
             ),
           ),
         ),
-        body: Container(
-          child: Center(
-            child: infoAllCity.isEmpty
-                ? CircularProgressIndicator()
-                : MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      itemCount: image.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () async {
-                            Navigator.push(context, PageRouteBuilder(
-                              pageBuilder: (_, animation, __) {
-                                return FadeTransition(
-                                    opacity: animation,
-                                    child: PlaceDetailScreen(
-                                      image: image,
-                                      screenHeight:
-                                          MediaQuery.of(context).size.height,
-                                    ));
-                              },
-                            ));
-                          },
-                          child: Container(
-                            height: 400,
-                            margin: EdgeInsets.only(bottom: 15, top: 10),
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: NetworkImage(image[index]),
-                                  fit: BoxFit.cover,
-                                )),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Spacer(),
-                                Text("Ciudad",
-                                    style: TextStyle(
-                                        fontSize: 30, color: Colors.white)),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  child: Text("Pais",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white)),
-                                ),
-                                Spacer(),
-                                Row(
-                                  children: [
-                                    TextButton.icon(
-                                        onPressed: () {},
-                                        style: TextButton.styleFrom(
-                                            primary: Colors.white,
-                                            shape: StadiumBorder()),
-                                        icon: Icon(CupertinoIcons.heart),
-                                        label: Text("500"))
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+        body: FirebaseAnimatedList(
+          query: data,
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+              Animation<double> animation, int index) {
+            Map Ciudad = snapshot.value as Map;
+            final id = index + 1;
+            final city = Ciudad['Ciudad'];
+            final cityDescription = Ciudad['Descripcion'];
+            final cityFollow = Ciudad['Follow'];
+            final cityLocalizacion = Ciudad['Localizacion'];
+            final cityPais = Ciudad['Pais'];
+
+            return InkWell(
+              onTap: () async {
+                Navigator.push(context, PageRouteBuilder(
+                  pageBuilder: (_, animation, __) {
+                    return FadeTransition(
+                        opacity: animation,
+                        child: PlaceDetailScreen(
+                          id: id,
+                          city: city,
+                          cityDescription: cityDescription,
+                          cityFollow: cityFollow,
+                          cityLocalizacion: cityLocalizacion,
+                          cityPais: cityPais,
+                          screenHeight: MediaQuery.of(context).size.height,
+                        ));
+                  },
+                ));
+              },
+              child: Stack(
+                children: [
+                  Container(
+                      height: 400,
+                      margin: EdgeInsets.only(bottom: 15, top: 10),
+                      padding: EdgeInsets.all(16),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      )),
+                  Container(
+                    height: 400,
+                    margin: EdgeInsets.only(bottom: 15, top: 10),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: NetworkImage(Ciudad['Imagenes']['0001I']),
+                          fit: BoxFit.cover,
+                        )),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Spacer(),
+                        Text(Ciudad['Ciudad'],
+                            style:
+                                TextStyle(fontSize: 30, color: Colors.white)),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          child: Text(Ciudad['Pais'],
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
+                        ),
+                        Spacer(),
+                        Row(
+                          children: [
+                            TextButton.icon(
+                                onPressed: () {},
+                                style: TextButton.styleFrom(
+                                    primary: Colors.white,
+                                    shape: StadiumBorder()),
+                                icon: Icon(CupertinoIcons.heart),
+                                label: Text(Ciudad['Follow'].toString()))
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-          ),
+                ],
+              ),
+            );
+          },
         ));
   }
 
@@ -198,14 +158,23 @@ class _Ciudades extends State<Ciudades> {
 }
 
 class PlaceDetailScreen extends StatefulWidget {
-  const PlaceDetailScreen({
-    super.key,
-    required this.image,
-    required this.screenHeight,
-  });
+  const PlaceDetailScreen(
+      {super.key,
+      required this.screenHeight,
+      required this.id,
+      required this.city,
+      required this.cityDescription,
+      required this.cityFollow,
+      required this.cityLocalizacion,
+      required this.cityPais});
 
-  final List image;
   final double screenHeight;
+  final int id;
+  final String city;
+  final String cityDescription;
+  final int cityFollow;
+  final String cityLocalizacion;
+  final String cityPais;
 
   @override
   State<PlaceDetailScreen> createState() => _PlaceDetailScreenState();
@@ -214,6 +183,14 @@ class PlaceDetailScreen extends StatefulWidget {
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   late ScrollController _controller;
   late ValueNotifier<double> bottomPercentNotifier;
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunchUrl(Uri.https(url))) {
+      await launchUrl(Uri.https(url));
+    } else {
+      throw 'No se pudo abrir la URL $url';
+    }
+  }
 
   void _scrollListener() {
     var percent =
@@ -262,6 +239,8 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ciu = widget.city;
+    final country = widget.cityPais;
     return Scaffold(
         body: Stack(
       children: [
@@ -295,39 +274,36 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: PageView.builder(
-                                          itemCount: widget.image.length,
-                                          physics: BouncingScrollPhysics(),
-                                          controller: PageController(
-                                              viewportFraction: .9),
-                                          itemBuilder: (context, index) {
-                                            final imageUrl =
-                                                widget.image[index];
-                                            return AnimatedContainer(
-                                              duration: kThemeAnimationDuration,
-                                              margin:
-                                                  EdgeInsets.only(right: 10),
-                                              decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.black12,
-                                                    blurRadius: 10,
-                                                  )
-                                                ],
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                image: DecorationImage(
-                                                  image: NetworkImage(imageUrl),
-                                                  fit: BoxFit.cover,
-                                                  colorFilter: ColorFilter.mode(
-                                                      Colors.black26,
-                                                      BlendMode.darken),
-                                                ),
+                                          child: PageView.builder(
+                                        itemCount: 3,
+                                        physics: BouncingScrollPhysics(),
+                                        controller: PageController(
+                                            viewportFraction: .9),
+                                        itemBuilder: (context, index) {
+                                          return AnimatedContainer(
+                                            duration: kThemeAnimationDuration,
+                                            margin: EdgeInsets.only(right: 10),
+                                            decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 10,
+                                                )
+                                              ],
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"),
+                                                fit: BoxFit.cover,
+                                                colorFilter: ColorFilter.mode(
+                                                    Colors.black26,
+                                                    BlendMode.darken),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                            ),
+                                          );
+                                        },
+                                      )),
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -351,7 +327,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     duration: kThemeAnimationDuration,
                                     opacity: bottomPercent < 1 ? 0 : 1,
                                     child: Text(
-                                      "Ciudad",
+                                      widget.city,
                                       style: TextStyle(
                                           fontSize:
                                               lerpDouble(20, 40, topPercent),
@@ -368,7 +344,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                     child: Opacity(
                                       opacity: topPercent,
                                       child: Text(
-                                        "Pais",
+                                        widget.cityPais,
                                         style: TextStyle(
                                             fontSize:
                                                 lerpDouble(20, 30, topPercent),
@@ -405,7 +381,8 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           CupertinoIcons.heart,
                                           size: 26,
                                         ),
-                                        label: Text("500")),
+                                        label:
+                                            Text(widget.cityFollow.toString())),
                                     Spacer(),
                                     TextButton.icon(
                                         onPressed: () {
@@ -475,19 +452,16 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   Icon(Icons.location_on,
                                       color: Colors.black26),
                                   Flexible(
-                                      child: Text(
-                                    "LOCALIZACIÒN",
-                                    style: TextStyle(color: Colors.blue),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  )),
-                                  Spacer(),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: Colors.white,
-                                      ))
+                                      child: TextButton(
+                                          onPressed: () {
+                                            print(widget.cityLocalizacion);
+                                          },
+                                          child: Text("$ciu, $country",
+                                              style:
+                                                  TextStyle(color: Colors.blue),
+                                              maxLines: 1,
+                                              overflow:
+                                                  TextOverflow.ellipsis))),
                                 ],
                               ),
                             ),
@@ -508,8 +482,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    Text(
-                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
+                    Text(widget.cityDescription),
                     SizedBox(
                       height: 20,
                     ),
@@ -528,9 +501,10 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   scrollDirection: Axis.horizontal,
                   itemExtent: 150,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: widget.image.length,
+                  itemCount: 3,
                   itemBuilder: (context, index) {
-                    final collectionPage = widget.image[index];
+                    final collectionPage =
+                        "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg";
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: InkWell(
