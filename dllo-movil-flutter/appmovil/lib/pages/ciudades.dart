@@ -1,22 +1,14 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:appmovil/models/imagenes_model.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
-
+import 'package:appmovil/pages/actividades.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../models/ciudades_model.dart';
-import '../models/actividad_model.dart';
-import 'actividades.dart';
+import 'package:http/http.dart' as http;
 
 class Ciudades extends StatefulWidget {
-  const Ciudades({super.key});
-
   @override
   State<StatefulWidget> createState() {
     return _Ciudades();
@@ -24,25 +16,43 @@ class Ciudades extends StatefulWidget {
 }
 
 class _Ciudades extends State<Ciudades> {
+  final Future<FirebaseApp> _fApp = Firebase.initializeApp();
+
   List<dynamic> image = [
     "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
     "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
     "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
   ];
 
-  dynamic infoAllCity;
+  List<dynamic> ciudad = [];
 
-  final _ref = FirebaseDatabase.instance.ref();
-  late StreamSubscription _ciudades;
+  Future<void> obtenerCiudades() async {
+    //no esta funcionando el limite
+    const url =
+        'https://appmovil-88754-default-rtdb.firebaseio.com/ciudades.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      setState(() {
+        ciudad = jsonData.values.toList();
+        //final acti = ciudad[0]['Actividad'].values.toList();
+        //print(acti);
+      });
+    } else {
+      throw Exception('Failed to load characters');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    obtenerCiudades();
   }
 
   @override
   Widget build(BuildContext context) {
-    final data = _ref.child('ciudades');
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -60,121 +70,159 @@ class _Ciudades extends State<Ciudades> {
             ),
           ),
         ),
-        body: FirebaseAnimatedList(
-          query: data,
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          shrinkWrap: true,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              Animation<double> animation, int index) {
-            Map Ciudad = snapshot.value as Map;
-            final id = index + 1;
-            final city = Ciudad['Ciudad'];
-            final cityDescription = Ciudad['Descripcion'];
-            final cityFollow = Ciudad['Follow'];
-            final cityLocalizacion = Ciudad['Localizacion'];
-            final cityPais = Ciudad['Pais'];
-
-            return InkWell(
-              onTap: () async {
-                Navigator.push(context, PageRouteBuilder(
-                  pageBuilder: (_, animation, __) {
-                    return FadeTransition(
-                        opacity: animation,
-                        child: PlaceDetailScreen(
-                          id: id,
-                          city: city,
-                          cityDescription: cityDescription,
-                          cityFollow: cityFollow,
-                          cityLocalizacion: cityLocalizacion,
-                          cityPais: cityPais,
-                          screenHeight: MediaQuery.of(context).size.height,
-                        ));
-                  },
-                ));
-              },
-              child: Stack(
-                children: [
-                  Container(
-                      height: 400,
-                      margin: EdgeInsets.only(bottom: 15, top: 10),
-                      padding: EdgeInsets.all(16),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      )),
-                  Container(
-                    height: 400,
-                    margin: EdgeInsets.only(bottom: 15, top: 10),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: DecorationImage(
-                          image: NetworkImage(Ciudad['Imagenes']['0001I']),
-                          fit: BoxFit.cover,
-                        )),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Spacer(),
-                        Text(Ciudad['Ciudad'],
-                            style:
-                                TextStyle(fontSize: 30, color: Colors.white)),
-                        SizedBox(
-                          height: 10,
+        body: FutureBuilder(
+          future: _fApp,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text("Something wrong with firebase");
+            } else if (snapshot.hasData) {
+              obtenerCiudades();
+              return Container(
+                child: Center(
+                  child: ciudad.isEmpty
+                      ? CircularProgressIndicator()
+                      : MediaQuery.removePadding(
+                          context: context,
+                          removeTop: true,
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: ciudad.length,
+                            itemBuilder: (context, index) {
+                              final city = ciudad[index]['Ciudad'];
+                              final cityDescription =
+                                  ciudad[index]['Descripcion'];
+                              final cityFollow =
+                                  ciudad[index]['Follow'].toString();
+                              final cityLocalizacion =
+                                  ciudad[index]['Localizacion'];
+                              final cityPais = ciudad[index]['Pais'];
+                              final cityImages =
+                                  ciudad[index]['Imagenes'].values.toList();
+                              final cityActividad =
+                                  ciudad[index]['Actividad'].values.toList();
+                              return InkWell(
+                                onTap: () async {
+                                  Navigator.push(context, PageRouteBuilder(
+                                    pageBuilder: (_, animation, __) {
+                                      return FadeTransition(
+                                          opacity: animation,
+                                          child: PlaceDetailScreen(
+                                            index: index,
+                                            city: city,
+                                            cityDescription: cityDescription,
+                                            cityFollow: cityFollow,
+                                            cityLocalizacion: cityLocalizacion,
+                                            cityPais: cityPais,
+                                            cityImages: cityImages,
+                                            cityActividad: cityActividad,
+                                            screenHeight: MediaQuery.of(context)
+                                                .size
+                                                .height,
+                                          ));
+                                    },
+                                  ));
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                        height: 400,
+                                        margin: EdgeInsets.only(
+                                            bottom: 15, top: 10),
+                                        padding: EdgeInsets.all(16),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        )),
+                                    Container(
+                                      height: 400,
+                                      margin:
+                                          EdgeInsets.only(bottom: 15, top: 10),
+                                      padding: EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          image: DecorationImage(
+                                            image: NetworkImage(cityImages[0]),
+                                            fit: BoxFit.cover,
+                                          )),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Spacer(),
+                                          Text(ciudad[index]['Ciudad'],
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  color: Colors.white)),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            child: Text(ciudad[index]['Pais'],
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.white)),
+                                          ),
+                                          Spacer(),
+                                          Row(
+                                            children: [
+                                              TextButton.icon(
+                                                  onPressed: () {},
+                                                  style: TextButton.styleFrom(
+                                                      primary: Colors.white,
+                                                      shape: StadiumBorder()),
+                                                  icon: Icon(
+                                                      CupertinoIcons.heart),
+                                                  label: Text(ciudad[index]
+                                                          ['Follow']
+                                                      .toString()))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                        Container(
-                          child: Text(Ciudad['Pais'],
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white)),
-                        ),
-                        Spacer(),
-                        Row(
-                          children: [
-                            TextButton.icon(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                    primary: Colors.white,
-                                    shape: StadiumBorder()),
-                                icon: Icon(CupertinoIcons.heart),
-                                label: Text(Ciudad['Follow'].toString()))
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
+                ),
+              );
+            } else {
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
           },
         ));
-  }
-
-  @override
-  void deactivate() {
-    // TODO: implement deactivate
-    super.deactivate();
-    _ciudades.cancel();
   }
 }
 
 class PlaceDetailScreen extends StatefulWidget {
   const PlaceDetailScreen(
       {super.key,
+      required this.index,
       required this.screenHeight,
-      required this.id,
       required this.city,
       required this.cityDescription,
       required this.cityFollow,
       required this.cityLocalizacion,
-      required this.cityPais});
+      required this.cityPais,
+      required this.cityImages,
+      required this.cityActividad});
 
+  final int index;
   final double screenHeight;
-  final int id;
   final String city;
   final String cityDescription;
-  final int cityFollow;
+  final String cityFollow;
   final String cityLocalizacion;
   final String cityPais;
+  final dynamic cityImages;
+  final dynamic cityActividad;
 
   @override
   State<PlaceDetailScreen> createState() => _PlaceDetailScreenState();
@@ -183,14 +231,6 @@ class PlaceDetailScreen extends StatefulWidget {
 class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   late ScrollController _controller;
   late ValueNotifier<double> bottomPercentNotifier;
-
-  Future<void> _launchURL(String url) async {
-    if (await canLaunchUrl(Uri.https(url))) {
-      await launchUrl(Uri.https(url));
-    } else {
-      throw 'No se pudo abrir la URL $url';
-    }
-  }
 
   void _scrollListener() {
     var percent =
@@ -239,8 +279,9 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ciu = widget.city;
-    final country = widget.cityPais;
+    final Ciud = widget.city;
+    final Pai = widget.cityPais;
+    final imagenes = widget.cityImages;
     return Scaffold(
         body: Stack(
       children: [
@@ -274,36 +315,38 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                          child: PageView.builder(
-                                        itemCount: 3,
-                                        physics: BouncingScrollPhysics(),
-                                        controller: PageController(
-                                            viewportFraction: .9),
-                                        itemBuilder: (context, index) {
-                                          return AnimatedContainer(
-                                            duration: kThemeAnimationDuration,
-                                            margin: EdgeInsets.only(right: 10),
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  blurRadius: 10,
-                                                )
-                                              ],
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              image: DecorationImage(
-                                                image: NetworkImage(
-                                                    "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"),
-                                                fit: BoxFit.cover,
-                                                colorFilter: ColorFilter.mode(
-                                                    Colors.black26,
-                                                    BlendMode.darken),
+                                        child: PageView.builder(
+                                          itemCount: imagenes.length,
+                                          physics: BouncingScrollPhysics(),
+                                          controller: PageController(
+                                              viewportFraction: .9),
+                                          itemBuilder: (context, index) {
+                                            final imageUrl = imagenes[index];
+                                            return AnimatedContainer(
+                                              duration: kThemeAnimationDuration,
+                                              margin:
+                                                  EdgeInsets.only(right: 10),
+                                              decoration: BoxDecoration(
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black12,
+                                                    blurRadius: 10,
+                                                  )
+                                                ],
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(imageUrl),
+                                                  fit: BoxFit.cover,
+                                                  colorFilter: ColorFilter.mode(
+                                                      Colors.black26,
+                                                      BlendMode.darken),
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      )),
+                                            );
+                                          },
+                                        ),
+                                      ),
                                       SizedBox(
                                         height: 10,
                                       ),
@@ -381,8 +424,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                           CupertinoIcons.heart,
                                           size: 26,
                                         ),
-                                        label:
-                                            Text(widget.cityFollow.toString())),
+                                        label: Text(widget.cityFollow)),
                                     Spacer(),
                                     TextButton.icon(
                                         onPressed: () {
@@ -392,6 +434,11 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                                   builder: (context) =>
                                                       Actividades(
                                                         estado: 0,
+                                                        actividades: widget
+                                                            .cityActividad,
+                                                        id: widget.index,
+                                                        ciudad: widget.city,
+                                                        pais: widget.cityPais,
                                                       )));
                                         },
                                         icon:
@@ -408,6 +455,11 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                                   builder: (context) =>
                                                       Actividades(
                                                         estado: 1,
+                                                        actividades: widget
+                                                            .cityActividad,
+                                                        id: widget.index,
+                                                        ciudad: widget.city,
+                                                        pais: widget.cityPais,
                                                       )));
                                         },
                                         style: TextButton.styleFrom(
@@ -452,16 +504,12 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   Icon(Icons.location_on,
                                       color: Colors.black26),
                                   Flexible(
-                                      child: TextButton(
-                                          onPressed: () {
-                                            print(widget.cityLocalizacion);
-                                          },
-                                          child: Text("$ciu, $country",
-                                              style:
-                                                  TextStyle(color: Colors.blue),
-                                              maxLines: 1,
-                                              overflow:
-                                                  TextOverflow.ellipsis))),
+                                      child: Text(
+                                    "$Ciud, $Pai",
+                                    style: TextStyle(color: Colors.blue),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )),
                                 ],
                               ),
                             ),
@@ -501,10 +549,10 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   scrollDirection: Axis.horizontal,
                   itemExtent: 150,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: 3,
+                  itemCount: widget.cityActividad.length,
                   itemBuilder: (context, index) {
                     final collectionPage =
-                        "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg";
+                        widget.cityActividad[index]['imagen'];
                     return Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: InkWell(
@@ -522,7 +570,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
             ),
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 20,
+                height: 200,
               ),
             )
           ],

@@ -4,8 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 
 class checkLista extends StatefulWidget {
+  checkLista(
+      {required this.estado,
+      required this.selectActividad,
+      required this.fecha,
+      required this.id,
+      required this.ciudad,
+      required this.pais});
+
   final int estado;
-  checkLista({required this.estado});
+  final dynamic selectActividad;
+  final dynamic fecha;
+  final int id;
+  final String ciudad;
+  final String pais;
 
   @override
   State<checkLista> createState() => _checkListaState();
@@ -14,6 +26,9 @@ class checkLista extends StatefulWidget {
 class _checkListaState extends State<checkLista> {
   @override
   Widget build(BuildContext context) {
+    final city = widget.ciudad;
+    final pais = widget.pais;
+    print(widget.selectActividad);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -60,7 +75,7 @@ class _checkListaState extends State<checkLista> {
           Container(
             margin: EdgeInsets.symmetric(vertical: 20),
             child: Text(
-              "Ciudad-Pais",
+              "$city ($pais)",
               style: TextStyle(
                   color: Colors.blue.shade800,
                   fontSize: 20,
@@ -71,7 +86,7 @@ class _checkListaState extends State<checkLista> {
               child: Center(
             child: ListView.separated(
               separatorBuilder: (context, index) => Divider(),
-              itemCount: 3,
+              itemCount: widget.selectActividad.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -88,10 +103,17 @@ class _checkListaState extends State<checkLista> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(5.0),
-                                  child: Image.network(
-                                      "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg",
-                                      fit: BoxFit.cover,
-                                      width: 50),
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.network(
+                                          widget.selectActividad[index]['imagen'],
+                                          fit: BoxFit.cover,
+                                          width: 50),
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 10,
@@ -105,7 +127,8 @@ class _checkListaState extends State<checkLista> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Actividad",
+                                              widget.selectActividad[index]
+                                                  ['name'],
                                               style: TextStyle(
                                                   color: Colors.blue.shade800,
                                                   fontSize: 14,
@@ -127,7 +150,7 @@ class _checkListaState extends State<checkLista> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    "Fecha",
+                                                    widget.fecha,
                                                     style: TextStyle(
                                                         color: Colors
                                                             .purple.shade800,
@@ -157,7 +180,8 @@ class _checkListaState extends State<checkLista> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "Actividad",
+                                              widget.selectActividad[index]
+                                                  ['name'],
                                               style: TextStyle(
                                                   color: Colors.blue.shade800,
                                                   fontSize: 14,
@@ -175,8 +199,7 @@ class _checkListaState extends State<checkLista> {
                                             ),
                                             Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .end,
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   IconButton(
                                                       onPressed: () {
