@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class Ciudades extends StatefulWidget {
   @override
@@ -35,11 +36,13 @@ class _Ciudades extends State<Ciudades> {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      setState(() {
-        ciudad = jsonData.values.toList();
-        //final acti = ciudad[0]['Actividad'].values.toList();
-        //print(acti);
-      });
+      if (mounted) {
+        setState(() {
+          ciudad = jsonData.values.toList();
+          //final acti = ciudad[0]['Actividad'].values.toList();
+          //print(acti);
+        });
+      }
     } else {
       throw Exception('Failed to load characters');
     }
@@ -268,6 +271,13 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     });
     bottomPercentNotifier = ValueNotifier(1.0);
     super.initState();
+  }
+
+  Future<void> _launchUrl() async {
+    final url = Uri.parse(widget.cityLocalizacion);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
   }
 
   @override
@@ -504,11 +514,16 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   Icon(Icons.location_on,
                                       color: Colors.black26),
                                   Flexible(
-                                      child: Text(
-                                    "$Ciud, $Pai",
-                                    style: TextStyle(color: Colors.blue),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                      child: InkWell(
+                                    child: Text(
+                                      "$Ciud, $Pai",
+                                      style: TextStyle(
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    onTap: () => _launchUrl(),
                                   )),
                                 ],
                               ),

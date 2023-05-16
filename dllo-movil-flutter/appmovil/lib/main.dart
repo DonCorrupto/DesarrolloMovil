@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: LoginPage(),
       //  Scaffold(
       //     appBar: AppBar(
       //       title: const Text("To Do"),

@@ -53,7 +53,15 @@ class _checkListaState extends State<checkLista> {
                         context: context,
                         type: QuickAlertType.success,
                         text: "Hecho");
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => Ciudades()));
+                    Future.delayed(
+                      Duration(seconds: 2),
+                      () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Ciudades()));
+                      },
+                    );
                   }
                 : () {
                     //SE AGREGA AL ITINERARIO Y SE MUESTRA EN EL PERFIL
@@ -61,7 +69,15 @@ class _checkListaState extends State<checkLista> {
                         context: context,
                         type: QuickAlertType.success,
                         text: "Hecho");
-                    //Navigator.push(context, MaterialPageRoute(builder: (context) => Ciudades()));
+                    Future.delayed(
+                      Duration(seconds: 2),
+                      () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Ciudades()));
+                      },
+                    );
                   },
             icon: Icon(
               Icons.done,
@@ -109,7 +125,8 @@ class _checkListaState extends State<checkLista> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
                                       child: Image.network(
-                                          widget.selectActividad[index]['imagen'],
+                                          widget.selectActividad[index]
+                                              ['imagen'],
                                           fit: BoxFit.cover,
                                           width: 50),
                                     ),
@@ -165,6 +182,17 @@ class _checkListaState extends State<checkLista> {
                                                             type: QuickAlertType
                                                                 .success,
                                                             text: "Eliminado");
+                                                        Future.delayed(
+                                                          Duration(seconds: 1),
+                                                          () {
+                                                            setState(() {
+                                                              widget
+                                                                  .selectActividad
+                                                                  .removeAt(
+                                                                      index);
+                                                            });
+                                                          },
+                                                        );
                                                       },
                                                       icon: Icon(
                                                         Icons.clear_rounded,
@@ -208,6 +236,17 @@ class _checkListaState extends State<checkLista> {
                                                             type: QuickAlertType
                                                                 .success,
                                                             text: "Eliminado");
+                                                        Future.delayed(
+                                                          Duration(seconds: 1),
+                                                          () {
+                                                            setState(() {
+                                                              widget
+                                                                  .selectActividad
+                                                                  .removeAt(
+                                                                      index);
+                                                            });
+                                                          },
+                                                        );
                                                       },
                                                       icon: Icon(
                                                         Icons.clear_rounded,
