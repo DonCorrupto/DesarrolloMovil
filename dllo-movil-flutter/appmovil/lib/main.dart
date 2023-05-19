@@ -1,3 +1,4 @@
+import 'package:appmovil/models/user.dart';
 import 'package:appmovil/pages/actividades.dart';
 import 'package:appmovil/pages/crear_cuenta.dart';
 import 'package:appmovil/pages/home.dart';
@@ -8,11 +9,15 @@ import 'package:appmovil/pages/login.dart';
 import 'package:appmovil/pages/perfil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_) => userData(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

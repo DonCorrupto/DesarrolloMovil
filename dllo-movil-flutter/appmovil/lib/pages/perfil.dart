@@ -1,9 +1,11 @@
+import 'package:appmovil/models/user.dart';
 import 'package:appmovil/pages/edit_profile.dart';
 import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/list_deseos.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class perfil extends StatefulWidget {
   const perfil({super.key});
@@ -22,6 +24,12 @@ class _perfilState extends State<perfil> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    final Data = Provider.of<userData>(context);
+    dynamic user = Data.userDatos;
+
+    print(user);
+    
     return Scaffold(
       backgroundColor: Colors.grey[200],
       extendBody: true,
@@ -255,10 +263,7 @@ class CustomCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      IconButton(
-                          onPressed: () {
-                          },
-                          icon: Icon(Icons.more_vert))
+                      IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))
                     ],
                   ),
                   SizedBox(height: 10),
