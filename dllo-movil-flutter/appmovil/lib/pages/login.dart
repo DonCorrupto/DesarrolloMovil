@@ -181,11 +181,14 @@ class _LoginPageState extends State<LoginPage> {
                                                   //print("Funciona");
 
                                                   myData.updateUser(user);
-                                                  Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              MainAppViaje()));
+                                                  Navigator.of(context)
+                                                      .pushAndRemoveUntil(
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  MainAppViaje()),
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false);
                                                 } else {
                                                   QuickAlert.show(
                                                       context: context,

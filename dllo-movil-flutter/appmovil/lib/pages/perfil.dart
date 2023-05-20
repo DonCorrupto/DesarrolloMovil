@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:appmovil/models/user.dart';
 import 'package:appmovil/pages/edit_profile.dart';
 import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/list_deseos.dart';
+import 'package:appmovil/pages/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class perfil extends StatefulWidget {
   const perfil({super.key});
@@ -28,8 +32,11 @@ class _perfilState extends State<perfil> {
     final Data = Provider.of<userData>(context);
     dynamic user = Data.userDatos;
 
+    String name = user['name'];
+    String lastname = user['lastname'];
+
     print(user);
-    
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       extendBody: true,
@@ -46,22 +53,42 @@ class _perfilState extends State<perfil> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Text(
-                      'My Profile',
-                      style: GoogleFonts.josefinSans(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 130,
+                        ),
+                        Text(
+                          'Mi Perfil',
+                          style: GoogleFonts.josefinSans(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                  (Route<dynamic> route) => false);
+                            },
+                            icon: Icon(
+                              Icons.dark_mode_outlined,
+                              color: Colors.indigoAccent,
+                            ))
+                      ],
                     ),
                     ClipOval(
                       child: Image.network(
-                        'https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg',
-                        width: size.width * 0.3,
+                        user['imagen'] == null
+                            ? "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg"
+                            : user['imagen'],
+                        width: size.width * 0.6,
                       ),
                     ),
                     Text.rich(
                       TextSpan(
-                        text: 'César Riojas\n',
+                        text: '$name $lastname \n',
                         style: GoogleFonts.josefinSans(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -73,7 +100,7 @@ class _perfilState extends State<perfil> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomElevatedButton(
-                          text: 'Edit Profile',
+                          text: 'Editar Perfil',
                           primary: Color(0xff4245ff),
                           estadoBoton: 0,
                         ),
@@ -89,8 +116,6 @@ class _perfilState extends State<perfil> {
               ),
             ),
             SizedBox(height: 10),
-            CustomCard(),
-            CustomCard(),
             CustomCard(),
             SizedBox(height: 50),
           ],
@@ -168,9 +193,43 @@ class CustomElevatedButton extends StatelessWidget {
   }
 }
 
-class CustomCard extends StatelessWidget {
+class CustomCard extends StatefulWidget {
   const CustomCard({Key? key}) : super(key: key);
 
+  @override
+  State<CustomCard> createState() => _CustomCardState();
+}
+
+class _CustomCardState extends State<CustomCard> {
+
+  List<dynamic> listaActividades = [];
+
+  Future<void> obtenerListaActividades() async {
+    //no esta funcionando el limite
+    const url =
+        'https://appmovil-88754-default-rtdb.firebaseio.com/listaactividades.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (mounted) {
+        setState(() {
+          listaActividades = jsonData.values.toList();
+          //final acti = ciudad[0]['Actividad'].values.toList();
+          print(listaActividades);
+        });
+      }
+    } else {
+      throw Exception('Failed to load characters');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerListaActividades();
+  }
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

@@ -1,7 +1,15 @@
+import 'dart:math';
+
+import 'package:appmovil/models/ciudades_model.dart';
 import 'package:appmovil/pages/ciudades.dart';
+import 'package:appmovil/pages/main_app.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+
+import '../models/user.dart';
 
 class checkLista extends StatefulWidget {
   checkLista(
@@ -24,11 +32,20 @@ class checkLista extends StatefulWidget {
 }
 
 class _checkListaState extends State<checkLista> {
+  final fb = FirebaseDatabase.instance;
   @override
   Widget build(BuildContext context) {
+    final Data = Provider.of<userData>(context);
+    dynamic user = Data.userDatos;
+
     final city = widget.ciudad;
     final pais = widget.pais;
     print(widget.selectActividad);
+
+    final Actividades = widget.selectActividad;
+
+    final id = widget.id + 1;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -48,18 +65,35 @@ class _checkListaState extends State<checkLista> {
           IconButton(
             onPressed: widget.estado == 0
                 ? () {
+                    print(user);
                     QuickAlert.show(
                         //SE AGREGA A LA LISTA DE DESEOS Y SE MUESTRA EN EL PERFIL
                         context: context,
                         type: QuickAlertType.success,
                         text: "Hecho");
+                    for (var activity in Actividades) {
+                      var rng = Random();
+                      var k = rng.nextInt(10000);
+
+                      final refDeseos = fb.ref().child('listadeseos/$k');
+                      refDeseos.set({
+                        "idCiudad": '00$id',
+                        "email": user['email'],
+                        "imagen": activity['imagen'],
+                        "name": activity['name'],
+                        "fecha": widget.fecha,
+                        "pais": pais,
+                        "ciudad": city
+                      });
+                    }
+
                     Future.delayed(
                       Duration(seconds: 2),
                       () {
-                        Navigator.pushReplacement(
-                            context,
+                        Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                                builder: (context) => Ciudades()));
+                                builder: (context) => MainAppViaje()),
+                            (Route<dynamic> route) => false);
                       },
                     );
                   }
@@ -69,13 +103,27 @@ class _checkListaState extends State<checkLista> {
                         context: context,
                         type: QuickAlertType.success,
                         text: "Hecho");
+                    for (var activity in Actividades) {
+                      var rng = Random();
+                      var k = rng.nextInt(10000);
+
+                      final refDeseos = fb.ref().child('listaactividades/$k');
+                      refDeseos.set({
+                        "idCiudad": '00$id',
+                        "email": user['email'],
+                        "imagen": activity['imagen'],
+                        "name": activity['name'],
+                        "pais": pais,
+                        "ciudad": city
+                      });
+                    }
                     Future.delayed(
                       Duration(seconds: 2),
                       () {
-                        Navigator.pushReplacement(
-                            context,
+                        Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
-                                builder: (context) => Ciudades()));
+                                builder: (context) => MainAppViaje()),
+                            (Route<dynamic> route) => false);
                       },
                     );
                   },
@@ -153,13 +201,6 @@ class _checkListaState extends State<checkLista> {
                                             ),
                                             SizedBox(
                                               height: 2,
-                                            ),
-                                            Text(
-                                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                                              maxLines: 2,
-                                              style: TextStyle(
-                                                  color: Colors.blue.shade800,
-                                                  fontSize: 12),
                                             ),
                                             Row(
                                                 mainAxisAlignment:

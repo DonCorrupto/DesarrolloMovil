@@ -85,7 +85,7 @@ class _Home extends State<Home> {
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.deepPurple)),
                           onPressed: () {
-                            Navigator.pushReplacement(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const LoginPage()));
