@@ -19,11 +19,59 @@ class perfil extends StatefulWidget {
 }
 
 class _perfilState extends State<perfil> {
-  List<dynamic> image = [
-    "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
-    "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
-    "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
-  ];
+  List<dynamic> listaActividades = [];
+  List<dynamic> listActivity = [];
+
+  Future<void> obtenerListaActividades() async {
+    //no esta funcionando el limite
+    const url =
+        'https://appmovil-88754-default-rtdb.firebaseio.com/listaactividades.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (mounted) {
+        setState(() {
+          listaActividades = jsonData.values.toList();
+          //final acti = ciudad[0]['Actividad'].values.toList();
+          //print(listaActividades);
+        });
+      }
+    } else {
+      throw Exception('Failed to load characters');
+    }
+  }
+
+  List<dynamic> ciudad = [];
+
+  Future<void> obtenerCiudades() async {
+    //no esta funcionando el limite
+    const url =
+        'https://appmovil-88754-default-rtdb.firebaseio.com/ciudades.json';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (mounted) {
+        setState(() {
+          ciudad = jsonData.values.toList();
+          //final acti = ciudad[0]['Actividad'].values.toList();
+          //print(acti);
+        });
+      }
+    } else {
+      throw Exception('Failed to load characters');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    obtenerListaActividades();
+    obtenerCiudades();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,92 +83,107 @@ class _perfilState extends State<perfil> {
     String name = user['name'];
     String lastname = user['lastname'];
 
-    print(user);
+    //print(user);
+
+    for (var actividadUser in listaActividades) {
+      if (actividadUser['email'] == user['email']) {
+        setState(() {
+          listActivity.add(actividadUser);
+        });
+      }
+    }
+
+    print(listActivity);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              height: size.height * 0.6,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 130,
-                        ),
-                        Text(
-                          'Mi Perfil',
-                          style: GoogleFonts.josefinSans(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+      body: listActivity.isEmpty
+          ? Container(child: Center(child: CircularProgressIndicator()))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: size.height * 0.6,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 50),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 130,
+                              ),
+                              Text(
+                                'Mi Perfil',
+                                style: GoogleFonts.josefinSans(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                        MaterialPageRoute(
+                                            builder: (context) => LoginPage()),
+                                        (Route<dynamic> route) => false);
+                                  },
+                                  icon: Icon(
+                                    Icons.dark_mode_outlined,
+                                    color: Colors.indigoAccent,
+                                  ))
+                            ],
                           ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
-                                  (Route<dynamic> route) => false);
-                            },
-                            icon: Icon(
-                              Icons.dark_mode_outlined,
-                              color: Colors.indigoAccent,
-                            ))
-                      ],
-                    ),
-                    ClipOval(
-                      child: Image.network(
-                        user['imagen'] == null
-                            ? "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg"
-                            : user['imagen'],
-                        width: size.width * 0.6,
+                          ClipOval(
+                            child: Image.network(
+                              user['imagen'] ?? "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg",
+                              width: size.width * 0.6,
+                            ),
+                          ),
+                          Text.rich(
+                            TextSpan(
+                              text: '$name $lastname \n',
+                              style: GoogleFonts.josefinSans(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              CustomElevatedButton(
+                                text: 'Editar Perfil',
+                                primary: Color(0xff4245ff),
+                                estadoBoton: 0,
+                              ),
+                              CustomElevatedButton(
+                                text: 'Futuros Viajes',
+                                primary: Color(0xff4245ff),
+                                estadoBoton: 1,
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
-                    Text.rich(
-                      TextSpan(
-                        text: '$name $lastname \n',
-                        style: GoogleFonts.josefinSans(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 1),
+                  for (dynamic actividad in listActivity)
+                   
+                    CustomCard(
+                      activity: actividad,
+                      infoCiudad: ciudad,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomElevatedButton(
-                          text: 'Editar Perfil',
-                          primary: Color(0xff4245ff),
-                          estadoBoton: 0,
-                        ),
-                        CustomElevatedButton(
-                          text: 'Futuros Viajes',
-                          primary: Color(0xff4245ff),
-                          estadoBoton: 1,
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                  SizedBox(height: 10),
+                ],
               ),
             ),
-            SizedBox(height: 10),
-            CustomCard(),
-            SizedBox(height: 50),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -193,46 +256,18 @@ class CustomElevatedButton extends StatelessWidget {
   }
 }
 
-class CustomCard extends StatefulWidget {
-  const CustomCard({Key? key}) : super(key: key);
+class CustomCard extends StatelessWidget {
+  const CustomCard(
+      {Key? key,
+      required this.activity,
+      required this.infoCiudad})
+      : super(key: key);
 
-  @override
-  State<CustomCard> createState() => _CustomCardState();
-}
+  final dynamic activity;
+  final dynamic infoCiudad;
 
-class _CustomCardState extends State<CustomCard> {
-
-  List<dynamic> listaActividades = [];
-
-  Future<void> obtenerListaActividades() async {
-    //no esta funcionando el limite
-    const url =
-        'https://appmovil-88754-default-rtdb.firebaseio.com/listaactividades.json';
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      if (mounted) {
-        setState(() {
-          listaActividades = jsonData.values.toList();
-          //final acti = ciudad[0]['Actividad'].values.toList();
-          print(listaActividades);
-        });
-      }
-    } else {
-      throw Exception('Failed to load characters');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    obtenerListaActividades();
-  }
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
       // height: size.height * 0.5,

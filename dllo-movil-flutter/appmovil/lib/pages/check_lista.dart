@@ -44,7 +44,7 @@ class _checkListaState extends State<checkLista> {
 
     final Actividades = widget.selectActividad;
 
-    final id = widget.id + 1;
+    final id = widget.id;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,7 +77,6 @@ class _checkListaState extends State<checkLista> {
 
                       final refDeseos = fb.ref().child('listadeseos/$k');
                       refDeseos.set({
-                        "idCiudad": '00$id',
                         "email": user['email'],
                         "imagen": activity['imagen'],
                         "name": activity['name'],
@@ -109,7 +108,6 @@ class _checkListaState extends State<checkLista> {
 
                       final refDeseos = fb.ref().child('listaactividades/$k');
                       refDeseos.set({
-                        "idCiudad": '00$id',
                         "email": user['email'],
                         "imagen": activity['imagen'],
                         "name": activity['name'],
@@ -258,13 +256,6 @@ class _checkListaState extends State<checkLista> {
                                             ),
                                             SizedBox(
                                               height: 2,
-                                            ),
-                                            Text(
-                                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-                                              maxLines: 2,
-                                              style: TextStyle(
-                                                  color: Colors.blue.shade800,
-                                                  fontSize: 12),
                                             ),
                                             Row(
                                                 mainAxisAlignment:

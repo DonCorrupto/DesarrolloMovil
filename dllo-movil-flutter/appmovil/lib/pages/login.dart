@@ -174,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                                           //print("$first , $second");
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            int pasaUser = 0;
                                             for (var user in users) {
                                               if (user['email'] == first.text) {
                                                 if (user['password'] ==
@@ -189,37 +190,25 @@ class _LoginPageState extends State<LoginPage> {
                                                           (Route<dynamic>
                                                                   route) =>
                                                               false);
-                                                } else {
-                                                  QuickAlert.show(
-                                                      context: context,
-                                                      type:
-                                                          QuickAlertType.error,
-                                                      text:
-                                                          "Email o Contraseña son incorrectas");
-                                                  Future.delayed(
-                                                    Duration(milliseconds: 5),
-                                                    () {
-                                                      first.clear();
-                                                      second.clear();
-                                                    },
-                                                  );
+                                                  pasaUser = 1;
+                                                  break;
                                                 }
-                                                break;
-                                              } else {
-                                                QuickAlert.show(
-                                                    context: context,
-                                                    type: QuickAlertType.error,
-                                                    text:
-                                                        "Email o Contraseña son incorrectas");
-                                                Future.delayed(
-                                                  Duration(milliseconds: 5),
-                                                  () {
-                                                    first.clear();
-                                                    second.clear();
-                                                  },
-                                                );
                                               }
-                                              break;
+                                            }
+                                            if (pasaUser == 0) {
+                                              //print("Incorrecto");
+                                              QuickAlert.show(
+                                                  context: context,
+                                                  type: QuickAlertType.error,
+                                                  text:
+                                                      "Email o Contraseña son incorrectas");
+                                              Future.delayed(
+                                                Duration(milliseconds: 5),
+                                                () {
+                                                  first.clear();
+                                                  second.clear();
+                                                },
+                                              );
                                             }
                                           } else {
                                             print("Error");
