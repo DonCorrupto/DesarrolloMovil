@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class perfil extends StatefulWidget {
   const perfil({super.key});
@@ -66,12 +67,20 @@ class _perfilState extends State<perfil> {
     }
   }
 
+  List<dynamic> listacity = [];
+  List<dynamic> listapais = [];
+
   @override
   void initState() {
     super.initState();
     obtenerListaActividades();
     obtenerCiudades();
   }
+
+  List<String> temporalcity = [];
+  List<String> temporalpais = [];
+
+  List<List<dynamic>> unir = [];
 
   @override
   Widget build(BuildContext context) {
@@ -93,13 +102,33 @@ class _perfilState extends State<perfil> {
       }
     }
 
-    print(listActivity);
+    //print(listActivity);
+
+    for (var act in listActivity) {
+      setState(() {
+        temporalcity.add(act['ciudad']);
+        temporalpais.add(act['pais']);
+      });
+    }
+
+    Set<String> palabrasUnicasSet1 = Set<String>.from(temporalcity);
+    Set<String> palabrasUnicasSet2 = Set<String>.from(temporalpais);
+
+    setState(() {
+      listacity = palabrasUnicasSet1.toList();
+      listapais = palabrasUnicasSet2.toList();
+
+      unir = List.generate(
+          listacity.length, (index) => [listacity[index], listapais[index]]);
+    });
+
+    //print(unir);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: listActivity.isEmpty
+      body: listapais.isEmpty
           ? Container(child: Center(child: CircularProgressIndicator()))
           : SingleChildScrollView(
               child: Column(
@@ -140,7 +169,8 @@ class _perfilState extends State<perfil> {
                           ),
                           ClipOval(
                             child: Image.network(
-                              user['imagen'] ?? "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg",
+                              user['imagen'] ??
+                                  "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg",
                               width: size.width * 0.6,
                             ),
                           ),
@@ -174,13 +204,12 @@ class _perfilState extends State<perfil> {
                     ),
                   ),
                   SizedBox(height: 1),
-                  for (dynamic actividad in listActivity)
-                   
-                    CustomCard(
-                      activity: actividad,
-                      infoCiudad: ciudad,
-                    ),
-                  SizedBox(height: 10),
+                  for (dynamic city in ciudad)
+                    for (dynamic info in unir)
+                      if (info[0] == city['Ciudad'] && info[1] == city['Pais'])
+                        CustomCard(
+                            city: info[0], pais: info[1], infoCiudad: city, emailUser: user['email'],),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -257,17 +286,22 @@ class CustomElevatedButton extends StatelessWidget {
 }
 
 class CustomCard extends StatelessWidget {
-  const CustomCard(
-      {Key? key,
-      required this.activity,
-      required this.infoCiudad})
-      : super(key: key);
+  const CustomCard({
+    Key? key,
+    required this.city,
+    required this.pais,
+    required this.emailUser,
+    required this.infoCiudad,
+  }) : super(key: key);
 
-  final dynamic activity;
+  final dynamic city;
   final dynamic infoCiudad;
+  final dynamic pais;
+  final dynamic emailUser;
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       width: double.infinity,
       // height: size.height * 0.5,
@@ -301,10 +335,26 @@ class CustomCard extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => listItinerario()));
+                              builder: (context) => listItinerario(cit: city, pa: pais, email: emailUser,)));
                     },
                     child: Image.network(
-                      'https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg',
+                      infoCiudad['Imagenes']['0001I'],
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+
+                        return Container(
+                          height: 250,
+                          width: 600,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          ),
+                        );
+                      },
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -329,7 +379,7 @@ class CustomCard extends StatelessWidget {
                             size: 20,
                           ),
                           Text(
-                            '500',
+                            infoCiudad['Follow'].toString(),
                             style: GoogleFonts.josefinSans(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
@@ -351,7 +401,7 @@ class CustomCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Pais-Ciudad',
+                        ' $city ($pais)',
                         style: GoogleFonts.josefinSans(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -361,14 +411,6 @@ class CustomCard extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    'Ubicación',
-                    style: GoogleFonts.josefinSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black38,
-                    ),
-                  ),
                 ],
               ),
             )

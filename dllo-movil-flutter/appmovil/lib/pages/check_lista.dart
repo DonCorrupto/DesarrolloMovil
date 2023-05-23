@@ -44,7 +44,6 @@ class _checkListaState extends State<checkLista> {
 
     final Actividades = widget.selectActividad;
 
-    final id = widget.id;
 
     return Scaffold(
       appBar: AppBar(
