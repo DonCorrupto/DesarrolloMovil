@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:appmovil/models/ciudades_model.dart';
-import 'package:appmovil/pages/ciudades.dart';
 import 'package:appmovil/pages/main_app.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';

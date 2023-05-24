@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:appmovil/pages/login.dart';
 import 'package:appmovil/pages/widgets/header_widget.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,7 +10,6 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 
 import '../common/theme_helper.dart';
-import 'custom_input.dart';
 
 class CrearCuenta extends StatefulWidget {
   const CrearCuenta({super.key});
@@ -143,7 +141,7 @@ class _CrearCuentaState extends State<CrearCuenta> {
                                   !RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
                                       .hasMatch(val)) {
                                 return "Ingrese un Correo Electronico Valido";
-                              } else if (val!.isEmpty) {
+                              } else if (val.isEmpty) {
                                 return "Por favor, Ingrese su Correo Electronico";
                               }
                               return null;

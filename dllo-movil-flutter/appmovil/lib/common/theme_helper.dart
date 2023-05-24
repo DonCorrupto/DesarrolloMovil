@@ -91,6 +91,3 @@ class ThemeHelper{
 
 }
 
-class LoginFormStyle{
-
-}

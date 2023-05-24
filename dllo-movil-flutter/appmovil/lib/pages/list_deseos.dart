@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:firebase_core/firebase_core.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +17,11 @@ class listDeseos extends StatefulWidget {
 }
 
 class _listDeseosState extends State<listDeseos> {
-  List<dynamic> deseos = [];
+  List<dynamic> listaDeseos = [];
+  List<dynamic> listDeseo = [];
+
+  dynamic listaDeseosKeys = [];
+  List<dynamic> listDeseoKeys = [];
 
   Future<void> obtenerDeseos() async {
     //no esta funcionando el limite
@@ -29,14 +34,31 @@ class _listDeseosState extends State<listDeseos> {
       final jsonData = json.decode(response.body);
       if (mounted) {
         setState(() {
-          deseos = jsonData.values.toList();
+          listaDeseos = jsonData.values.toList();
+          listaDeseosKeys = jsonData.keys.toList();
           //final acti = ciudad[0]['Actividad'].values.toList();
-          print(deseos);
+          print(listaDeseosKeys);
         });
       }
     } else {
       throw Exception('Failed to load characters');
     }
+  }
+
+  void borrar(index, fb) {
+    final key = index;
+    fb.ref().child('listadeseos/$key').remove().then((_) {
+      print("Dato Borrado");
+      setState(() {
+        listaDeseos = [];
+        listDeseo = [];
+        listaDeseosKeys = [];
+        listDeseoKeys = [];
+        obtenerDeseos();
+      });
+    }).catchError((error) {
+      print("Error al borrar el dato: $error");
+    });
   }
 
   @override
@@ -52,7 +74,18 @@ class _listDeseosState extends State<listDeseos> {
 
     String emailUser = user['email'];
 
-    print(emailUser);
+    for (int i = 0; i < listaDeseos.length; i++) {
+      if (listaDeseos[i]['email'] == emailUser) {
+        setState(() {
+          listDeseo.add(listaDeseos[i]);
+          listDeseoKeys.add(listaDeseosKeys[i]);
+        });
+      }
+    }
+
+    //print(emailUser);
+
+    final fb = FirebaseDatabase.instance;
 
     return Scaffold(
         appBar: AppBar(
@@ -65,96 +98,119 @@ class _listDeseosState extends State<listDeseos> {
           ),
         ),
         body: Center(
-          child: deseos.isEmpty
+          child: listDeseo.isEmpty
               ? CircularProgressIndicator()
               : ListWheelScrollView.useDelegate(
                   physics: FixedExtentScrollPhysics(),
                   itemExtent: 400,
                   diameterRatio: 6,
                   childDelegate: ListWheelChildBuilderDelegate(
-                    childCount: deseos.length,
-                    builder: (context, index) {
-                      final idCiity = deseos[index]['idCiudad'];
-                      final email = deseos[index]['email'];
-                      final image = deseos[index]['imagen'];
-                      final name = deseos[index]['name'];
-                      final fecha = deseos[index]['fecha'];
-                      final pais = deseos[index]['pais'];
-                      final ciudad = deseos[index]['ciudad'];
-                      for (var listaDeseo in deseos) {
-                        if (email == emailUser) {
-                          return Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 20),
-                                child: Row(
+                      childCount: listDeseo.length,
+                      builder: (context, index) {
+                        final image = listDeseo[index]['imagen'];
+                        final name = listDeseo[index]['name'];
+                        final fecha = listDeseo[index]['fecha'];
+                        final pais = listDeseo[index]['pais'];
+                        final ciudad = listDeseo[index]['ciudad'];
+                        return Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "$ciudad ($pais)",
+                                    style: TextStyle(
+                                        color: Colors.blue.shade800,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 400,
+                                margin: EdgeInsets.only(bottom: 15, top: 10),
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    image: DecorationImage(
+                                      image: NetworkImage(image),
+                                      fit: BoxFit.cover,
+                                    )),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    Spacer(),
+                                    Text(name,
+                                        style: TextStyle(
+                                            fontSize: 30, color: Colors.white)),
                                     SizedBox(
-                                      width: 130,
+                                      height: 10,
                                     ),
-                                    Text(
-                                      "$ciudad ($pais)",
-                                      style: TextStyle(
-                                          color: Colors.blue.shade800,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
+                                    Spacer(),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          fecha,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Spacer(),
+                                        IconButton(
+                                            onPressed: () async {
+                                              final key = listDeseoKeys[index];
+                                              ArtDialogResponse response =
+                                                  await ArtSweetAlert.show(
+                                                      barrierDismissible: false,
+                                                      context: context,
+                                                      artDialogArgs: ArtDialogArgs(
+                                                          denyButtonText:
+                                                              "Cancelar",
+                                                          title:
+                                                              "Estas Seguro?",
+                                                          text:
+                                                              "Piensalo Dos Veces!",
+                                                          confirmButtonText:
+                                                              "Si, Borralo",
+                                                          type:
+                                                              ArtSweetAlertType
+                                                                  .warning));
+
+                                              if (response == null) {
+                                                return;
+                                              }
+
+                                              if (response.isTapConfirmButton) {
+                                                ArtSweetAlert.show(
+                                                    context: context,
+                                                    artDialogArgs: ArtDialogArgs(
+                                                        type: ArtSweetAlertType
+                                                            .success,
+                                                        title: "Borrado!"));
+                                                return borrar(key, fb);
+                                              }
+                                            },
+                                            style: TextButton.styleFrom(
+                                                primary: Colors.white,
+                                                shape: StadiumBorder()),
+                                            icon: Icon(
+                                              CupertinoIcons.bin_xmark,
+                                              color: Colors.red,
+                                            ))
+                                      ],
                                     ),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.add_box_outlined,
-                                          color: Colors.green,
-                                        ))
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: Container(
-                                  height: 400,
-                                  margin: EdgeInsets.only(bottom: 15, top: 10),
-                                  padding: EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(image),
-                                        fit: BoxFit.cover,
-                                      )),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Spacer(),
-                                      Text(name,
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.white)),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Spacer(),
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () {},
-                                              style: TextButton.styleFrom(
-                                                  primary: Colors.white,
-                                                  shape: StadiumBorder()),
-                                              icon: Icon(
-                                                CupertinoIcons.bin_xmark,
-                                                color: Colors.red,
-                                              ))
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                      }
-                    },
-                  ),
+                            ),
+                          ],
+                        );
+                      }),
                 ),
         ));
   }

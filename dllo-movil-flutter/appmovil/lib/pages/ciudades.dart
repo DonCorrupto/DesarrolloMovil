@@ -5,7 +5,6 @@ import 'package:appmovil/pages/actividades.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -64,13 +63,6 @@ class _Ciudades extends State<Ciudades> {
             "Ciudades",
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.black),
-          ),
-          leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ),
           ),
         ),
         body: FutureBuilder(

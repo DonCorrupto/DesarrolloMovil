@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:appmovil/models/user.dart';
 import 'package:appmovil/pages/main_app.dart';
-import 'package:appmovil/pages/perfil.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:quickalert/quickalert.dart';
 

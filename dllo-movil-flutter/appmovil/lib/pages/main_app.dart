@@ -1,4 +1,4 @@
-import 'package:appmovil/pages/actividades.dart';
+
 import 'package:appmovil/pages/ciudades.dart';
 import 'package:appmovil/pages/perfil.dart';
 import 'package:flutter/material.dart';
