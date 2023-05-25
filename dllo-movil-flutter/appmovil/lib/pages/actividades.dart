@@ -1,4 +1,5 @@
 import 'package:appmovil/pages/check_lista.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,13 +28,9 @@ class Actividades extends StatefulWidget {
 }
 
 class _Actividades extends State<Actividades> {
-  List<dynamic> image = [
-    "https://i.pinimg.com/564x/08/2f/3c/082f3c618f2399d9c6ccfb01312cb429.jpg",
-    "https://i.pinimg.com/564x/d3/43/bd/d343bd41d7c4461f79a554f6db577f29.jpg",
-    "https://i.pinimg.com/564x/6f/ae/cc/6faecc71e59fc56cf184e663ff81357a.jpg"
-  ];
-
   TextEditingController _date = TextEditingController();
+
+  int seleccionados = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -115,18 +112,30 @@ class _Actividades extends State<Actividades> {
                               child: const Text('Cancel'),
                             ),
                             TextButton(
-                              onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => checkLista(
-                                            estado: 0,
-                                            selectActividad:
-                                                widget.selectActividad,
-                                            fecha: _date.text,
-                                            id: widget.id,
-                                            ciudad: widget.ciudad,
-                                            pais: widget.pais,
-                                          ))),
+                              onPressed: () {
+                                if (widget.selectActividad.isEmpty) {
+                                  ArtSweetAlert.show(
+                                      context: context,
+                                      artDialogArgs: ArtDialogArgs(
+                                          type: ArtSweetAlertType.danger,
+                                          title: "Oops...",
+                                          text:
+                                              "Selecciona al menos una Actividad :("));
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => checkLista(
+                                                estado: 0,
+                                                selectActividad:
+                                                    widget.selectActividad,
+                                                fecha: _date.text,
+                                                id: widget.id,
+                                                ciudad: widget.ciudad,
+                                                pais: widget.pais,
+                                              )));
+                                }
+                              },
                               child: const Text('OK'),
                             )
                           ],
@@ -135,17 +144,26 @@ class _Actividades extends State<Actividades> {
                     );
                   }
                 : () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => checkLista(
-                                  estado: 1,
-                                  selectActividad: widget.selectActividad,
-                                  fecha: _date.text,
-                                  id: widget.id,
-                                  ciudad: widget.ciudad,
-                                  pais: widget.pais,
-                                )));
+                    if (widget.selectActividad.isEmpty) {
+                      ArtSweetAlert.show(
+                          context: context,
+                          artDialogArgs: ArtDialogArgs(
+                              type: ArtSweetAlertType.danger,
+                              title: "Oops...",
+                              text: "Selecciona al menos una Actividad :("));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => checkLista(
+                                    estado: 1,
+                                    selectActividad: widget.selectActividad,
+                                    fecha: _date.text,
+                                    id: widget.id,
+                                    ciudad: widget.ciudad,
+                                    pais: widget.pais,
+                                  )));
+                    }
                   },
             icon: widget.estado == 0
                 ? Icon(
@@ -162,6 +180,20 @@ class _Actividades extends State<Actividades> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 50,
+            ),
+            Container(
+                child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                "Seleccionados: $seleccionados",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: "Bevan",
+                    fontWeight: FontWeight.bold),
+              ),
+            )),
             Expanded(
               child: Container(
                 padding: EdgeInsets.all(10.0),
@@ -198,11 +230,14 @@ class _Actividades extends State<Actividades> {
                                 title: Container(
                                   child: Center(
                                       child: Text(
-                                          "Esta Actividad ya esta seleccionada")),
+                                    "Esta Actividad ya esta seleccionada",
+                                  )),
                                 ),
                               );
                             },
                           );
+                        } else {
+                          seleccionados++;
                         }
                         //print(isRepeated);
                         //print(widget.selectActividad);

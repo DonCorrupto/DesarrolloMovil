@@ -374,7 +374,7 @@ class CustomCard extends StatelessWidget {
                         children: [
                           Icon(
                             CupertinoIcons.heart,
-                            color: Colors.red,
+                            color: Colors.black,
                             size: 20,
                           ),
                           Text(

@@ -62,7 +62,7 @@ class _checkListaState extends State<checkLista> {
           IconButton(
             onPressed: widget.estado == 0
                 ? () {
-                    print(user);
+                    //print(user);
                     QuickAlert.show(
                         //SE AGREGA A LA LISTA DE DESEOS Y SE MUESTRA EN EL PERFIL
                         context: context,
