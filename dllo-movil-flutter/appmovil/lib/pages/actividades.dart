@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:appmovil/pages/check_lista.dart';
 import 'package:art_sweetalert/art_sweetalert.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:vertical_card_pager/vertical_card_pager.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/user.dart';
 
 class Actividades extends StatefulWidget {
   Actividades(
@@ -32,8 +38,58 @@ class _Actividades extends State<Actividades> {
 
   int seleccionados = 0;
 
+  List<dynamic> lista = [];
+  List<dynamic> listaSoloUser = [];
+
+  Future<void> obtener(estado) async {
+    var url;
+
+    if (estado == 1) {
+      url =
+          'https://appmovil-88754-default-rtdb.firebaseio.com/listaactividades.json';
+    } else {
+      url =
+          'https://appmovil-88754-default-rtdb.firebaseio.com/listadeseos.json';
+    }
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (mounted) {
+        setState(() {
+          lista = jsonData.values.toList();
+          //final acti = ciudad[0]['Actividad'].values.toList();
+          //print(ciudad);
+          //print(lista);
+        });
+      }
+    } else {
+      throw Exception('Failed to load characters');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    obtener(widget.estado);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Data = Provider.of<userData>(context);
+    dynamic user = Data.userDatos;
+
+    for (var i = 0; i < lista.length; i++) {
+      if (lista[i]['email'] == user['email'] &&
+          lista[i]['ciudad'] == widget.ciudad &&
+          lista[i]['pais'] == widget.pais) {
+        listaSoloUser.add(lista[i]);
+      }
+    }
+
+    //print(listaSoloUser);
+
     final List<String> titles = [];
 
     widget.actividades.forEach((dynamic element) {
@@ -122,18 +178,48 @@ class _Actividades extends State<Actividades> {
                                           text:
                                               "Selecciona al menos una Actividad :("));
                                 } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => checkLista(
-                                                estado: 0,
-                                                selectActividad:
-                                                    widget.selectActividad,
-                                                fecha: _date.text,
-                                                id: widget.id,
-                                                ciudad: widget.ciudad,
-                                                pais: widget.pais,
-                                              )));
+                                  var contador = 1;
+                                  for (var i = 0;
+                                      i < listaSoloUser.length;
+                                      i++) {
+                                    for (var x = 0;
+                                        x < widget.selectActividad.length;
+                                        x++) {
+                                      if (widget.selectActividad[x]['name'] ==
+                                          listaSoloUser[i]['name']) {
+                                        ArtSweetAlert.show(
+                                            context: context,
+                                            artDialogArgs: ArtDialogArgs(
+                                                type: ArtSweetAlertType.danger,
+                                                title: "Oops...",
+                                                text:
+                                                    "Esta Actividad ya la elegiste. Revisa tu Perfil! :("));
+                                        setState(() {
+                                          widget.selectActividad.removeLast();
+                                          seleccionados--;
+                                        });
+
+                                        contador = 0;
+                                        break;
+                                      }
+                                    }
+                                    if (contador == 1) {
+                                      //print('no repetido');
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => checkLista(
+                                                    estado: 0,
+                                                    selectActividad:
+                                                        widget.selectActividad,
+                                                    fecha: _date.text,
+                                                    id: widget.id,
+                                                    ciudad: widget.ciudad,
+                                                    pais: widget.pais,
+                                                  )));
+                                      break;
+                                    }
+                                  }
                                 }
                               },
                               child: const Text('OK'),
@@ -152,17 +238,44 @@ class _Actividades extends State<Actividades> {
                               title: "Oops...",
                               text: "Selecciona al menos una Actividad :("));
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => checkLista(
-                                    estado: 1,
-                                    selectActividad: widget.selectActividad,
-                                    fecha: _date.text,
-                                    id: widget.id,
-                                    ciudad: widget.ciudad,
-                                    pais: widget.pais,
-                                  )));
+                      var contador = 1;
+                      for (var i = 0; i < listaSoloUser.length; i++) {
+                        for (var x = 0;
+                            x < widget.selectActividad.length;
+                            x++) {
+                          if (widget.selectActividad[x]['name'] ==
+                              listaSoloUser[i]['name']) {
+                            ArtSweetAlert.show(
+                                context: context,
+                                artDialogArgs: ArtDialogArgs(
+                                    type: ArtSweetAlertType.danger,
+                                    title: "Oops...",
+                                    text:
+                                        "Esta Actividad ya la elegiste. Revisa tu Perfil! :("));
+                            setState(() {
+                              widget.selectActividad.removeLast();
+                              seleccionados--;
+                            });
+
+                            contador = 0;
+                            break;
+                          }
+                        }
+                        if (contador == 1) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => checkLista(
+                                        estado: 1,
+                                        selectActividad: widget.selectActividad,
+                                        fecha: _date.text,
+                                        id: widget.id,
+                                        ciudad: widget.ciudad,
+                                        pais: widget.pais,
+                                      )));
+                          break;
+                        }
+                      }
                     }
                   },
             icon: widget.estado == 0

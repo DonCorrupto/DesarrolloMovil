@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appmovil/pages/main_app.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,6 @@ class _checkListaState extends State<checkLista> {
 
     final Actividades = widget.selectActividad;
 
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -63,11 +63,12 @@ class _checkListaState extends State<checkLista> {
             onPressed: widget.estado == 0
                 ? () {
                     //print(user);
-                    QuickAlert.show(
-                        //SE AGREGA A LA LISTA DE DESEOS Y SE MUESTRA EN EL PERFIL
+                    ArtSweetAlert.show(
                         context: context,
-                        type: QuickAlertType.success,
-                        text: "Hecho");
+                        artDialogArgs: ArtDialogArgs(
+                            type: ArtSweetAlertType.success,
+                            title: "Felicidades!",
+                            text: "Acabaste de agregar las actividades a tu lista de deseos"));
                     for (var activity in Actividades) {
                       var rng = Random();
                       var k = rng.nextInt(10000);
@@ -95,10 +96,12 @@ class _checkListaState extends State<checkLista> {
                   }
                 : () {
                     //SE AGREGA AL ITINERARIO Y SE MUESTRA EN EL PERFIL
-                    QuickAlert.show(
+                    ArtSweetAlert.show(
                         context: context,
-                        type: QuickAlertType.success,
-                        text: "Hecho");
+                        artDialogArgs: ArtDialogArgs(
+                            type: ArtSweetAlertType.success,
+                            title: "Felicidades!",
+                            text: "Acabaste de agregar las actividades a tu lista de itinerario"));
                     for (var activity in Actividades) {
                       var rng = Random();
                       var k = rng.nextInt(10000);

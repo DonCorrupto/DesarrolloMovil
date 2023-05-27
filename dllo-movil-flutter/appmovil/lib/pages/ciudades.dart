@@ -203,7 +203,7 @@ class _Ciudades extends State<Ciudades> {
                                                         'ciudades/$key/Follow/$keyFollow')
                                                     .remove()
                                                     .then((_) {
-                                                  print("Dato Borrado");
+                                                  //print("Dato Borrado");
                                                   setState(() {
                                                     ciudad = [];
                                                     ciudadKey = [];
@@ -368,7 +368,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
               break;
             }
           }
-          print(contadorFollowEmail);
+          //print(contadorFollowEmail);
         });
       }
     } else {
