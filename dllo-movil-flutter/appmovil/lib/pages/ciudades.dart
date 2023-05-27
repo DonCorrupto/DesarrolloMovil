@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:appmovil/pages/actividades.dart';
+import 'package:appmovil/pages/main_app.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -188,7 +189,8 @@ class _Ciudades extends State<Ciudades> {
                                             onPressed: () {
                                               final key = ciudadKey[index];
                                               var rng = Random();
-                                              var k = rng.nextInt(10000);
+                                              var k =
+                                                  rng.nextInt(10000).toString();
 
                                               final keyFollow =
                                                   listFollowKeys[0];
@@ -213,7 +215,7 @@ class _Ciudades extends State<Ciudades> {
                                                     .ref()
                                                     .child(
                                                         'ciudades/$key/Follow');
-                                                refDeseos.set({
+                                                refDeseos.update({
                                                   k: user['email'],
                                                 }).then((_) {
                                                   setState(() {
@@ -343,6 +345,30 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
           //final acti = ciudad[0]['Actividad'].values.toList();
           //print(ciudadFollow[0]['Follow']);
           //print(ciudadKeyFollow);
+
+          for (var i = 0; i < ciudad.length; i++) {
+            if (ciudad[i]['Ciudad'] == widget.city &&
+                ciudad[i]['Pais'] == widget.cityPais) {
+              try {
+                ciudadFollow.add(ciudad[i]['Follow'].values.toList());
+                ciudadKeyFollow.add(ciudad[i]['Follow'].keys.toList());
+              } catch (e) {
+                ciudadFollow.add(["user"]);
+                ciudadKeyFollow.add(["000"]);
+              }
+            }
+          }
+
+          for (var x = 0; x < ciudadFollow.length; x++) {
+            if (ciudadFollow[x][0].toString() == widget.user) {
+              setState(() {
+                contadorFollowEmail = 1;
+                contadorFollowKey = ciudadKeyFollow[x][0].toString();
+              });
+              break;
+            }
+          }
+          print(contadorFollowEmail);
         });
       }
     } else {
@@ -386,29 +412,6 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
     final Pai = widget.cityPais;
     final imagenes = widget.cityImages;
     final fb = FirebaseDatabase.instance;
-
-    for (var i = 0; i < ciudad.length; i++) {
-      if (ciudad[i]['Ciudad'] == widget.city &&
-          ciudad[i]['Pais'] == widget.cityPais) {
-        try {
-          ciudadFollow.add(ciudad[i]['Follow'].values.toList());
-          ciudadKeyFollow.add(ciudad[i]['Follow'].keys.toList());
-        } catch (e) {
-          ciudadFollow.add(["user"]);
-          ciudadKeyFollow.add(["000"]);
-        }
-      }
-    }
-
-    for (var x = 0; x < ciudadFollow.length; x++) {
-      if (ciudadFollow[x][0].toString() == widget.user) {
-        setState(() {
-          contadorFollowEmail = 1;
-          contadorFollowKey = ciudadKeyFollow[x][0].toString();
-        });
-        break;
-      }
-    }
 
     //print(contadorFollowEmail);
     //print(contadorFollowKey);
@@ -490,6 +493,12 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   left: -60 * (1 - bottomPercent),
                                   child: BackButton(
                                     color: Colors.white,
+                                    onPressed: () => Navigator.of(context)
+                                        .pushAndRemoveUntil(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MainAppViaje()),
+                                            (Route<dynamic> route) => false),
                                   )),
                               Positioned(
                                   top: lerpDouble(20, 140, topPercent)!
@@ -546,52 +555,90 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     TextButton.icon(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           final key = widget.ciudadKey;
                                           var rng = Random();
-                                          var k = rng.nextInt(10000);
+                                          var k = rng.nextInt(10000).toString();
 
                                           if (contadorFollowEmail == 1) {
+                                            var cantidad =
+                                                int.parse(widget.cityFollow) -
+                                                    1;
                                             fb
                                                 .ref()
                                                 .child(
                                                     'ciudades/$key/Follow/$contadorFollowKey')
-                                                .remove()
-                                                .then((_) {
-                                              print("Dato Borrado");
-                                              setState(() {
-                                                ciudadFollow = [];
-                                                ciudadKeyFollow = [];
-
-                                                ciudad = [];
-                                                ciudadKey = [];
-
-                                                contadorFollowEmail = 0;
-                                                contadorFollowKey = "000";
-
-                                                obtenerCiudades();
-                                              });
-                                            });
+                                                .remove();
+                                            await Future.delayed(
+                                                Duration(seconds: 1));
+                                            Navigator.of(context).pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PlaceDetailScreen(
+                                                            index: widget.index,
+                                                            city: widget.city,
+                                                            cityDescription: widget
+                                                                .cityDescription,
+                                                            cityFollow: cantidad.toString(),
+                                                            cityLocalizacion:
+                                                                widget
+                                                                    .cityLocalizacion,
+                                                            cityPais: widget
+                                                                .cityPais,
+                                                            cityImages:
+                                                                widget
+                                                                    .cityImages,
+                                                            cityActividad: widget
+                                                                .cityActividad,
+                                                            user: widget.user,
+                                                            ciudadKey:
+                                                                widget
+                                                                    .ciudadKey,
+                                                            contadorEmail: 0,
+                                                            contadorKey: "000",
+                                                            screenHeight: widget
+                                                                .screenHeight)),
+                                                (Route<dynamic> route) =>
+                                                    false);
                                           } else {
+                                            var cantidad =
+                                                int.parse(widget.cityFollow) +
+                                                    1;
                                             final refDeseos = fb
                                                 .ref()
                                                 .child('ciudades/$key/Follow');
-                                            refDeseos.set({
+                                            refDeseos.update({
                                               k: widget.user,
-                                            }).then((_) {
-                                              setState(() {
-                                                ciudadFollow = [];
-                                                ciudadKeyFollow = [];
-
-                                                ciudad = [];
-                                                ciudadKey = [];
-
-                                                contadorFollowEmail = 0;
-                                                contadorFollowKey = "000";
-
-                                                obtenerCiudades();
-                                              });
                                             });
+                                            await Future.delayed(
+                                                Duration(seconds: 1));
+                                            Navigator.of(context).pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                    builder: (context) => PlaceDetailScreen(
+                                                        index: widget.index,
+                                                        city: widget.city,
+                                                        cityDescription: widget
+                                                            .cityDescription,
+                                                        cityFollow:
+                                                            cantidad.toString(),
+                                                        cityLocalizacion: widget
+                                                            .cityLocalizacion,
+                                                        cityPais:
+                                                            widget.cityPais,
+                                                        cityImages:
+                                                            widget.cityImages,
+                                                        cityActividad: widget
+                                                            .cityActividad,
+                                                        user: widget.user,
+                                                        ciudadKey:
+                                                            widget.ciudadKey,
+                                                        contadorEmail: 1,
+                                                        contadorKey:
+                                                            contadorFollowKey,
+                                                        screenHeight: widget
+                                                            .screenHeight)),
+                                                (Route<dynamic> route) =>
+                                                    false);
                                           }
                                         },
                                         style: TextButton.styleFrom(

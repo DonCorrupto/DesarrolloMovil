@@ -207,7 +207,12 @@ class _perfilState extends State<perfil> {
                     for (dynamic info in unir)
                       if (info[0] == city['Ciudad'] && info[1] == city['Pais'])
                         CustomCard(
-                            city: info[0], pais: info[1], infoCiudad: city, emailUser: user['email'],),
+                          city: info[0],
+                          pais: info[1],
+                          infoCiudad: city,
+                          Follows: city['Follow'],
+                          emailUser: user['email'],
+                        ),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -291,15 +296,18 @@ class CustomCard extends StatelessWidget {
     required this.pais,
     required this.emailUser,
     required this.infoCiudad,
+    required this.Follows
   }) : super(key: key);
 
   final dynamic city;
   final dynamic infoCiudad;
   final dynamic pais;
   final dynamic emailUser;
+  final dynamic Follows;
 
   @override
   Widget build(BuildContext context) {
+    print(Follows.length);
 
     return Container(
       width: double.infinity,
@@ -334,7 +342,11 @@ class CustomCard extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => listItinerario(cit: city, pa: pais, email: emailUser,)));
+                              builder: (context) => listItinerario(
+                                    cit: city,
+                                    pa: pais,
+                                    email: emailUser,
+                                  )));
                     },
                     child: Image.network(
                       infoCiudad['Imagenes']['0001I'],
@@ -371,6 +383,7 @@ class CustomCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Icon(
                             CupertinoIcons.heart,
@@ -378,7 +391,7 @@ class CustomCard extends StatelessWidget {
                             size: 20,
                           ),
                           Text(
-                            infoCiudad['Follow'].toString(),
+                            Follows.length.toString(),
                             style: GoogleFonts.josefinSans(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
