@@ -64,7 +64,7 @@ class _Ciudades extends State<Ciudades> {
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          "Ciudades",
+          "Ciudades del Mundo",
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.black),
         ),

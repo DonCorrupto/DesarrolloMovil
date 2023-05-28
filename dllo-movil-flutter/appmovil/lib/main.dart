@@ -1,5 +1,7 @@
 import 'package:appmovil/models/user.dart';
+import 'package:appmovil/pages/crear_cuenta.dart';
 import 'package:appmovil/pages/home.dart';
+import 'package:appmovil/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

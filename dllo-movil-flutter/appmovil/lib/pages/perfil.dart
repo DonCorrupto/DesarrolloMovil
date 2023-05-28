@@ -5,6 +5,8 @@ import 'package:appmovil/pages/edit_profile.dart';
 import 'package:appmovil/pages/list_Itinerario.dart';
 import 'package:appmovil/pages/list_deseos.dart';
 import 'package:appmovil/pages/login.dart';
+import 'package:appmovil/services/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -121,13 +123,14 @@ class _perfilState extends State<perfil> {
           listacity.length, (index) => [listacity[index], listapais[index]]);
     });
 
-    //print(unir);
+    print(user);
+    print(listapais);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: listapais.isEmpty
+      body: user == null
           ? Container(child: Center(child: CircularProgressIndicator()))
           : SingleChildScrollView(
               child: Column(
@@ -154,7 +157,9 @@ class _perfilState extends State<perfil> {
                                 ),
                               ),
                               IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    await FirebaseService.signOut();
+                                    await Future.delayed(Duration(seconds: 1));
                                     Navigator.of(context).pushAndRemoveUntil(
                                         MaterialPageRoute(
                                             builder: (context) => LoginPage()),
@@ -171,6 +176,7 @@ class _perfilState extends State<perfil> {
                               user['imagen'] ??
                                   "https://raw.githubusercontent.com/InvenceSaltillo/flutter_profile_screen/main/assets/me.jpg",
                               width: size.width * 0.6,
+                              height: 200,
                             ),
                           ),
                           Text.rich(
@@ -186,11 +192,11 @@ class _perfilState extends State<perfil> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              CustomElevatedButton(
+                              /*CustomElevatedButton(
                                 text: 'Editar Perfil',
                                 primary: Color(0xff4245ff),
                                 estadoBoton: 0,
-                              ),
+                              ),*/
                               CustomElevatedButton(
                                 text: 'Futuros Viajes',
                                 primary: Color(0xff4245ff),
@@ -290,14 +296,14 @@ class CustomElevatedButton extends StatelessWidget {
 }
 
 class CustomCard extends StatelessWidget {
-  const CustomCard({
-    Key? key,
-    required this.city,
-    required this.pais,
-    required this.emailUser,
-    required this.infoCiudad,
-    required this.Follows
-  }) : super(key: key);
+  const CustomCard(
+      {Key? key,
+      required this.city,
+      required this.pais,
+      required this.emailUser,
+      required this.infoCiudad,
+      required this.Follows})
+      : super(key: key);
 
   final dynamic city;
   final dynamic infoCiudad;

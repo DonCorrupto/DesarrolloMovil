@@ -99,7 +99,7 @@ class _listDeseosState extends State<listDeseos> {
         ),
         body: Center(
           child: listDeseo.isEmpty
-              ? CircularProgressIndicator()
+              ? Container()
               : ListWheelScrollView.useDelegate(
                   physics: FixedExtentScrollPhysics(),
                   itemExtent: 400,

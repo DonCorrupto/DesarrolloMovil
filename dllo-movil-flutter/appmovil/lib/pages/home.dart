@@ -44,7 +44,7 @@ class _Home extends State<Home> {
                     margin: const EdgeInsets.fromLTRB(0, 0, 0, 9),
                     constraints: BoxConstraints(maxWidth: 296),
                     child: Text(
-                      "We are here to make your holiday easier",
+                      "Hacemos tu aventuras mas faciles",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 24,
@@ -61,7 +61,7 @@ class _Home extends State<Home> {
                     margin: EdgeInsets.fromLTRB(1, 0, 0, 30),
                     constraints: BoxConstraints(maxWidth: 272),
                     child: Text(
-                      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+                      "Top 1 de aplicaciones rotas del curso",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
@@ -91,7 +91,7 @@ class _Home extends State<Home> {
                                     builder: (context) => const LoginPage()));
                           },
                           child: Text(
-                            "                   Get Started                      ",
+                            "                   Empieza                      ",
                             style: GoogleFonts.plusJakartaSans(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -115,7 +115,7 @@ class _Home extends State<Home> {
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: 'Don’t have an account? ',
+                                    text: 'No tienes una Cuenta? ',
                                     style: GoogleFonts.plusJakartaSans(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -124,7 +124,7 @@ class _Home extends State<Home> {
                                     ),
                                   ),
                                   TextSpan(
-                                      text: 'Register',
+                                      text: 'Registrate',
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,

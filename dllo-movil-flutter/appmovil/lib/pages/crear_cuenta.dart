@@ -1,13 +1,18 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:appmovil/pages/login.dart';
 import 'package:appmovil/pages/widgets/header_widget.dart';
+import 'package:appmovil/services/firebase_storage.dart';
+import 'package:appmovil/services/upload_image.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../common/theme_helper.dart';
 
@@ -30,6 +35,8 @@ class _CrearCuentaState extends State<CrearCuenta> {
 
   final fb = FirebaseDatabase.instance;
 
+  File? imagen_to_upload;
+
   @override
   Widget build(BuildContext context) {
     GlobalKey<FormState> formKey = GlobalKey();
@@ -44,9 +51,11 @@ class _CrearCuentaState extends State<CrearCuenta> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            Container(
-              height: 150,
-              child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+            Center(
+              child: Container(
+                height: 150,
+                child: HeaderWidget(150, false, Icons.person_add_alt_1_rounded),
+              ),
             ),
             Container(
               margin: EdgeInsets.fromLTRB(25, 50, 25, 10),
@@ -54,6 +63,9 @@ class _CrearCuentaState extends State<CrearCuenta> {
               alignment: Alignment.center,
               child: Column(
                 children: [
+                  SizedBox(
+                    height: 100,
+                  ),
                   Form(
                     key: _formKey,
                     child: Column(
@@ -76,10 +88,24 @@ class _CrearCuentaState extends State<CrearCuenta> {
                                     ),
                                   ],
                                 ),
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.grey.shade300,
-                                  size: 80.0,
+                                child: InkWell(
+                                  child: imagen_to_upload != null
+                                      ? ClipOval(
+                                          child: Image.file(imagen_to_upload!,
+                                              fit: BoxFit.cover,
+                                              width: 150,
+                                              height: 150))
+                                      : Icon(
+                                          Icons.person,
+                                          color: Colors.grey.shade300,
+                                          size: 80.0,
+                                        ),
+                                  onTap: () async {
+                                    final imagen = await getImage();
+                                    setState(() {
+                                      imagen_to_upload = File(imagen!.path);
+                                    });
+                                  },
                                 ),
                               ),
                               Container(
@@ -226,118 +252,67 @@ class _CrearCuentaState extends State<CrearCuenta> {
                                 ),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
+                              var uploaded;
+
                               if (_formKey.currentState!.validate()) {
-                                ref.set({
-                                  "name": first.text,
-                                  "lastname": second.text,
-                                  "email": third.text,
-                                  "password": fourth.text
-                                }).asStream();
-                                QuickAlert.show(
-                                    context: context,
-                                    type: QuickAlertType.success,
-                                    text: "Tu Cuenta Ha Sido Creada");
-                                Future.delayed(
-                                  Duration(seconds: 1),
-                                  () {
-                                    setState(() {});
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) => LoginPage()),
-                                        (Route<dynamic> route) => false);
-                                  },
-                                );
+                                if (imagen_to_upload != null) {
+                                  uploaded =
+                                      await uploadImage(imagen_to_upload!);
+                                  ref.set({
+                                    "name": first.text,
+                                    "lastname": second.text,
+                                    "email": third.text,
+                                    "password": fourth.text,
+                                    "imagen": uploaded
+                                  }).asStream();
+                                  ArtSweetAlert.show(
+                                      context: context,
+                                      artDialogArgs: ArtDialogArgs(
+                                        type: ArtSweetAlertType.success,
+                                        title: "Tu cuenta ha sido creada!",
+                                      ));
+                                  Future.delayed(
+                                    Duration(seconds: 1),
+                                    () {
+                                      setState(() {});
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()),
+                                          (Route<dynamic> route) => false);
+                                    },
+                                  );
+                                } else {
+                                  ref.set({
+                                    "name": first.text,
+                                    "lastname": second.text,
+                                    "email": third.text,
+                                    "password": fourth.text
+                                  }).asStream();
+                                  ArtSweetAlert.show(
+                                      context: context,
+                                      artDialogArgs: ArtDialogArgs(
+                                        type: ArtSweetAlertType.success,
+                                        title: "Tu cuenta ha sido creada!",
+                                      ));
+                                  Future.delayed(
+                                    Duration(seconds: 1),
+                                    () {
+                                      setState(() {});
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  LoginPage()),
+                                          (Route<dynamic> route) => false);
+                                    },
+                                  );
+                                }
                               }
                             },
                           ),
                         ),
                         SizedBox(height: 30.0),
-                        Text(
-                          "O crea una cuenta usando redes sociales",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                        SizedBox(height: 25.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              child: FaIcon(
-                                FontAwesomeIcons.googlePlus,
-                                size: 35,
-                                color: HexColor("#EC2D2F"),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return ThemeHelper().alartDialog(
-                                          "Google Plus",
-                                          "You tap on GooglePlus social icon.",
-                                          context);
-                                    },
-                                  );
-                                });
-                              },
-                            ),
-                            SizedBox(
-                              width: 30.0,
-                            ),
-                            GestureDetector(
-                              child: Container(
-                                padding: EdgeInsets.all(0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(
-                                      width: 5, color: HexColor("#40ABF0")),
-                                  color: HexColor("#40ABF0"),
-                                ),
-                                child: FaIcon(
-                                  FontAwesomeIcons.twitter,
-                                  size: 23,
-                                  color: HexColor("#FFFFFF"),
-                                ),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return ThemeHelper().alartDialog(
-                                          "Twitter",
-                                          "You tap on Twitter social icon.",
-                                          context);
-                                    },
-                                  );
-                                });
-                              },
-                            ),
-                            SizedBox(
-                              width: 30.0,
-                            ),
-                            GestureDetector(
-                              child: FaIcon(
-                                FontAwesomeIcons.facebook,
-                                size: 35,
-                                color: HexColor("#3E529C"),
-                              ),
-                              onTap: () {
-                                setState(() {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return ThemeHelper().alartDialog(
-                                          "Facebook",
-                                          "You tap on Facebook social icon.",
-                                          context);
-                                    },
-                                  );
-                                });
-                              },
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
