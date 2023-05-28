@@ -1,5 +1,6 @@
 import 'package:actividadlogin/pages/home.dart';
 import 'package:actividadlogin/services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -45,8 +46,8 @@ class _LoginState extends State<Login> {
                             textStyle: const TextStyle(fontSize: 20),
                           ),
                           onPressed: () async {
-                            await FirebaseService.signInWithGoogle();
-                            
+                            User? userFirebase = await FirebaseService.signInWithGoogle();
+                            print(userFirebase);
                           },
                           child: const Text('Google'),
                         ),

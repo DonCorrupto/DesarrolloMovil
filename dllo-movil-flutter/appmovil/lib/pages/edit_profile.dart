@@ -220,6 +220,8 @@ class _editProfileState extends State<editProfile> {
                               var uploaded;
                               var key = onlyKey.toString();
 
+                              Map<String, dynamic> userInfoUpdate = {};
+
                               final ref = fb.ref().child('users/$key');
                               print(key);
 
@@ -239,16 +241,20 @@ class _editProfileState extends State<editProfile> {
                                         title: "Tu perfil ha sido actualizado!",
                                       ));
                                   Future.delayed(
-                                    Duration(seconds: 1),
+                                    Duration(seconds: 2),
                                     () {
-                                      setState(() {});
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MainAppViaje()),
-                                          (Route<dynamic> route) => false);
+                                      userInfoUpdate['name'] = first.text;
+                                      userInfoUpdate['lastname'] = second.text;
+                                      userInfoUpdate['email'] = emailUser;
+                                      userInfoUpdate['imagen'] = uploaded;
+
+                                      Data.updateUser(userInfoUpdate);
                                     },
                                   );
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) => MainAppViaje()),
+                                      (Route<dynamic> route) => false);
                                 } else {
                                   ref.update({
                                     "name": first.text,
@@ -262,16 +268,20 @@ class _editProfileState extends State<editProfile> {
                                         title: "Tu perfil ha sido actualizado!",
                                       ));
                                   Future.delayed(
-                                    Duration(seconds: 1),
+                                    Duration(seconds: 2),
                                     () {
-                                      setState(() {});
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MainAppViaje()),
-                                          (Route<dynamic> route) => false);
+                                      userInfoUpdate['name'] = first.text;
+                                      userInfoUpdate['lastname'] = second.text;
+                                      userInfoUpdate['email'] = emailUser;
+                                      userInfoUpdate['imagen'] = user['imagen'];
+
+                                      Data.updateUser(userInfoUpdate);
                                     },
                                   );
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) => MainAppViaje()),
+                                      (Route<dynamic> route) => false);
                                 }
                               }
                             },

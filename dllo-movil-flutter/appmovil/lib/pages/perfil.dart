@@ -123,8 +123,8 @@ class _perfilState extends State<perfil> {
           listacity.length, (index) => [listacity[index], listapais[index]]);
     });
 
-    print(user);
-    print(listapais);
+    //print(user);
+    //print(listapais);
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -192,11 +192,11 @@ class _perfilState extends State<perfil> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              /*CustomElevatedButton(
+                              CustomElevatedButton(
                                 text: 'Editar Perfil',
                                 primary: Color(0xff4245ff),
                                 estadoBoton: 0,
-                              ),*/
+                              ),
                               CustomElevatedButton(
                                 text: 'Futuros Viajes',
                                 primary: Color(0xff4245ff),
@@ -313,7 +313,7 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(Follows.length);
+    //print(Follows.length);
 
     return Container(
       width: double.infinity,
