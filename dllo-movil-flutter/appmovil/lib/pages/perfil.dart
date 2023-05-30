@@ -92,6 +92,7 @@ class _perfilState extends State<perfil> {
 
     String name = user['name'];
     String lastname = user['lastname'];
+    bool google = user['google'] != null ? false : user['google'];
 
     //print(user);
 
@@ -130,7 +131,7 @@ class _perfilState extends State<perfil> {
       backgroundColor: Colors.grey[200],
       extendBody: true,
       extendBodyBehindAppBar: true,
-      body: user == null
+      body: user == null && listapais.isEmpty
           ? Container(child: Center(child: CircularProgressIndicator()))
           : SingleChildScrollView(
               child: Column(
@@ -189,21 +190,32 @@ class _perfilState extends State<perfil> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              CustomElevatedButton(
-                                text: 'Editar Perfil',
-                                primary: Color(0xff4245ff),
-                                estadoBoton: 0,
-                              ),
-                              CustomElevatedButton(
-                                text: 'Futuros Viajes',
-                                primary: Color(0xff4245ff),
-                                estadoBoton: 1,
-                              ),
-                            ],
-                          )
+                          google != true
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomElevatedButton(
+                                      text: 'Futuros Viajes',
+                                      primary: Color(0xff4245ff),
+                                      estadoBoton: 1,
+                                    ),
+                                  ],
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomElevatedButton(
+                                      text: 'Editar Perfil',
+                                      primary: const Color(0xff4245ff),
+                                      estadoBoton: 0,
+                                    ),
+                                    CustomElevatedButton(
+                                      text: 'Futuros Viajes',
+                                      primary: Color(0xff4245ff),
+                                      estadoBoton: 1,
+                                    ),
+                                  ],
+                                )
                         ],
                       ),
                     ),
@@ -415,18 +427,15 @@ class CustomCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        ' $city ($pais)',
-                        style: GoogleFonts.josefinSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))
-                    ],
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    ' $city ($pais)',
+                    style: GoogleFonts.josefinSans(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 10),
                 ],

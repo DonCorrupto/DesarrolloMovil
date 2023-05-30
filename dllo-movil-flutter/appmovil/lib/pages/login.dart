@@ -149,7 +149,6 @@ class _LoginPageState extends State<LoginPage> {
                                                 .inputBoxDecorationShaddow(),
                                           ),
                                           SizedBox(height: 15.0),
-                                          
                                           Container(
                                             decoration: ThemeHelper()
                                                 .buttonBoxDecoration(context),
@@ -160,7 +159,8 @@ class _LoginPageState extends State<LoginPage> {
                                                 padding: EdgeInsets.fromLTRB(
                                                     40, 10, 40, 10),
                                                 child: Text(
-                                                  'Iniciar Sesión'.toUpperCase(),
+                                                  'Iniciar Sesión'
+                                                      .toUpperCase(),
                                                   style: TextStyle(
                                                       fontSize: 20,
                                                       fontWeight:
@@ -266,6 +266,9 @@ class _LoginPageState extends State<LoginPage> {
                                                       userGoogle['imagen'] =
                                                           userFirebase
                                                               ?.photoURL;
+                                                      userGoogle['google'] =
+                                                          userFirebase
+                                                              ?.emailVerified;
 
                                                       myData.updateUser(
                                                           userGoogle);

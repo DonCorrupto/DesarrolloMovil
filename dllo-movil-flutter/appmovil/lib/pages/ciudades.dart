@@ -229,6 +229,7 @@ class _Ciudades extends State<Ciudades> {
                                             style: TextButton.styleFrom(
                                                 shape: StadiumBorder()),
                                             icon: Icon(
+                                              size: 20,
                                                 CupertinoIcons.heart_fill,
                                                 color: listFollow[0] !=
                                                         user['email']
@@ -237,7 +238,7 @@ class _Ciudades extends State<Ciudades> {
                                             label: Text(
                                               cityFollow.toString(),
                                               style: TextStyle(
-                                                  color: Colors.black),
+                                                  color: Colors.black, fontSize: 12),
                                             )),
                                       )
                                     ],

@@ -68,7 +68,8 @@ class _checkListaState extends State<checkLista> {
                         artDialogArgs: ArtDialogArgs(
                             type: ArtSweetAlertType.success,
                             title: "Felicidades!",
-                            text: "Acabaste de agregar las actividades a tu lista de deseos"));
+                            text:
+                                "Acabaste de agregar las actividades a tu lista de deseos"));
                     for (var activity in Actividades) {
                       var rng = Random();
                       var k = rng.nextInt(10000);
@@ -101,7 +102,8 @@ class _checkListaState extends State<checkLista> {
                         artDialogArgs: ArtDialogArgs(
                             type: ArtSweetAlertType.success,
                             title: "Felicidades!",
-                            text: "Acabaste de agregar las actividades a tu lista de itinerario"));
+                            text:
+                                "Acabaste de agregar las actividades a tu lista de itinerario"));
                     for (var activity in Actividades) {
                       var rng = Random();
                       var k = rng.nextInt(10000);
@@ -216,11 +218,14 @@ class _checkListaState extends State<checkLista> {
                                                       alignment:
                                                           Alignment.bottomLeft,
                                                       onPressed: () {
-                                                        QuickAlert.show(
+                                                        ArtSweetAlert.show(
                                                             context: context,
-                                                            type: QuickAlertType
-                                                                .success,
-                                                            text: "Eliminado");
+                                                            artDialogArgs: ArtDialogArgs(
+                                                                type:
+                                                                    ArtSweetAlertType
+                                                                        .success,
+                                                                title:
+                                                                    "Eliminado!"));
                                                         Future.delayed(
                                                           Duration(seconds: 1),
                                                           () {
@@ -263,11 +268,14 @@ class _checkListaState extends State<checkLista> {
                                                 children: [
                                                   IconButton(
                                                       onPressed: () {
-                                                        QuickAlert.show(
+                                                        ArtSweetAlert.show(
                                                             context: context,
-                                                            type: QuickAlertType
-                                                                .success,
-                                                            text: "Eliminado");
+                                                            artDialogArgs: ArtDialogArgs(
+                                                                type:
+                                                                    ArtSweetAlertType
+                                                                        .success,
+                                                                title:
+                                                                    "Eliminado!"));
                                                         Future.delayed(
                                                           Duration(seconds: 1),
                                                           () {

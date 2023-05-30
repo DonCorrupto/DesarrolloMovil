@@ -11,11 +11,11 @@ class FirebaseService {
       FirebaseApp app = await Firebase.initializeApp();
       User? user = FirebaseAuth.instance.currentUser;
 
-      if (user != null) {
+      /*if (user != null) {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MainAppViaje()),
             (Route<dynamic> route) => false);
-      }
+      }*/
 
       return app;
     } catch (e) {
